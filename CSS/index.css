@@ -1,0 +1,8 @@
+@font-face {
+    font-family: Rhama;
+    src: url(../font/Rhama.ttf);
+}
+.main_title{
+    font-family: Rhama;
+    font-size: larger;
+}

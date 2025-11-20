@@ -18,7 +18,7 @@
         <div class="main_content">
 
             <div class="content_div cd_1">
-
+                <!-- 学习记录：课程、读书笔记 -->
                 <h2>笔记</h2>
 
                 <div class="coontent_link_div cld_1">
@@ -35,6 +35,7 @@
                 </div>
             </div>
 
+            <div class="cd_23">
             <div class="content_div cd_2">
 
                 <h2>项目</h2>
@@ -53,7 +54,7 @@
             </div>
 
             <div class="content_div cd_3">
-
+                <!-- 整理、归纳、考据、阐发的心得与学习成果 -->
                 <h2>札记</h2>
 
                 <div class="content_link_div cld_3">
@@ -68,16 +69,18 @@
                     </ul>
                 </div>
             </div>
+            </div>
 
+            <div class="cd_45">
             <div class="content_div cd_4">
-
+                <!-- 记载各种琐事、见闻、考据、掌故等，内容包罗万象，无特定中心主题 -->
                 <h2>杂记</h2>
 
                 <div class="content_link_div cld_4">
 
                     <ul class="content_link_list cll_4">
                         <li class="content_link">
-                            <a href="#">7777</a>
+                            <a href="./content/cd_4/CK3 mod 顺序列表.md">CK3 mod 顺序列表</a>
                         </li>
                         <li class="content_link">
                             <a href="#">8888</a>
@@ -87,7 +90,7 @@
             </div>
 
             <div class="content_div cd_5">
-
+                <!-- 人生感悟、生活思考、社会评论等 -->
                 <h2>随笔</h2>
 
                 <div class="content_link_div cld_5">
@@ -102,8 +105,21 @@
                     </ul>
                 </div>
             </div>
+            </div>
         </div>
 
-        <button class="about_me_button">About me</button>
+        <div class="external_link">
+            <a href="https://github.com/JiaheLv/JiaheLv.github.io" class="my_github_link" target="_blank">
+                <img src="./image/logo-github.svg" title="Github Link" class="github_icon"/>
+            </a>
+            <button class="about_me_button">About me</button>
+        </div>
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/js/sw.js')
+                .then(() => console.log('ServiceWorker 注册成功'))
+                .catch(err => console.error('ServiceWorker 注册失败', err));
+            }
+        </script>
     </body>
 </html>

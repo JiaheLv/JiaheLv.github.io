@@ -17,28 +17,16 @@ body{
     margin: 1%;
     padding: 0 1%;
     box-sizing: border-box;
-
-    /* border-color: blueviolet; */
-    /* border-style: solid; */
-    /* border-width: 1px; */
 }
 
 .main_title{
-    /* 使用常规文档流，并通过 margin 自动居中，避免 absolute 导致脱离流
-       这样 .welcome 可以自然地出现在 .main_title 下面 */
     position: relative;
     margin: 0 auto 0;
-    /* padding: 5px; */
 
     width: max-content;
     font-family: Rhama;
     font-size: 480%;
     font-weight: bolder;
-    /* text-align: center; */
-
-    /* border-color: aqua; */
-    /* border-style: solid; */
-    /* border-width: 1px; */
 }
 
 hr{
@@ -49,33 +37,26 @@ hr{
     border: none;
 }
 
-.welcome{
-    /* 作为块级元素居中并放在 .main_title 下面 */
+/* .welcome{
     position: relative;
     display: block;
     margin: 0 auto 10px;
     width: max-content;
     font-size: large;
     font-weight: 500;
-    /* text-align: center; */
     border-color: red;
     border-style: solid;
     border-width: 1px;
-}
+} */
 
 .main_content{
     margin: 10px 3% auto;
 
     display: grid;
-    grid-template-columns: 2.3fr 5fr 2.7fr;
+    grid-template-columns: 2fr 8fr;
     grid-template-rows: 6fr 4fr;
     gap: 10px;
-    /* max-width: 1200px; */
-    height: 80vh;
-
-    /* border-color: greenyellow; */
-    /* border-style: solid; */
-    /* border-width: 1px; */
+    height: 82vh;
 }
 
 .content_div{
@@ -84,19 +65,19 @@ hr{
     border-radius: 10px;
     border-color: black;
     border-style: solid;
-    border-width: 2px;
+    border-width: 3px;
 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 
     display: flex;
     flex-direction: column;
     overflow: hidden;
-
 }
 .content_div:hover{
-    /* transform: translateY(-5px); */
     transform: scale(1.01);
-    /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
+    background-color: rgba(255, 191, 112, 0.3);
+    ;
 }
 
 .content_div h2{
@@ -112,21 +93,33 @@ hr{
     grid-column: 1;
     grid-row: 1 / span 2;
 }
+.cd_23{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
 .cd_2{
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
+    margin-right: 5px;
 }
 .cd_3{
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 1;
+    margin-left: 5px;
+}
+.cd_45{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 .cd_4{
-    grid-column: 2;
-    grid-row: 2;
+    grid-column: 1;
+    grid-row: 1;
+    margin-right: 5px;
 }
 .cd_5{
-    grid-column: 3;
-    grid-row: 2;
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 5px;
 }
 
 .content_link_div{
@@ -155,7 +148,6 @@ hr{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    /* background-color: rgba(255, 255, 255, 0.15); */
     backdrop-filter: blur(5px);
     border: 2px solid rgba(0, 0, 0, 0.2);
 }
@@ -164,20 +156,60 @@ hr{
     transform: scale(1.03);
 }
 
-.about_me_button{
+.external_link{
     position: relative;
-    margin: 10px auto 5px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 15px auto 5px;
+    padding: 0;
+
+    height: max-content;
+    width: max-content;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.my_github_link{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+.my_github_link:hover {
+    transform: scale(1.01);
+}
+
+.github_icon{
+    margin: 0;
+    padding: 0;
+
+    height: 25px;
+    width: auto;
+}
+
+.about_me_button{
+    margin: 0;
+    padding: 0 5px;
+
+    height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 0.6em;
+
+    border-radius: 1em;
     border-color: black;
     border-style: solid;
-    border-width: 2px;
+    border-width: 3px;
+
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    
+    font-size: medium;
     font-weight: bold;
 }
 .about_me_button:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateX(-50%) scale(1.05);
+    transform: scale(1.05);
 }

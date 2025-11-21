@@ -34,9 +34,8 @@ self.addEventListener('fetch', event => {
 							<meta name="viewport" content="width=device-width,initial-scale=1" />
 							<link rel="icon" href="./image/icon.jpg">
 							<title>${url.pathname.split('/').pop()}</title>
-							// <link rel="stylesheet" href="./css/github-markdown.css">
-							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-dark.min.css" integrity="sha512-BrOPA520KmDMqieeM7XFe6a3u3Sb3F1JBaQnrIAmWg3EYrciJ+Qqe6ZcKCdfPv26rGcgTrJnZ/IdQEct8h3Zhw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-							<style>
+							<link rel="stylesheet" href="./css/github-markdown.css">
+							<!-- <style>
 								/* 保留布局样式，但不要覆盖主题的颜色/背景 */
 								body{
 									padding:20px;
@@ -50,15 +49,17 @@ self.addEventListener('fetch', event => {
 									border-radius:6px;
 								}
 								@media(max-width:600px){
-									.markdown-body{ padding:20px }
+									.markdown-body{
+										padding:20px
+									}
 								}
-							</style>
+							</style> -->
                         </head>
                         <body>
 							<article id="content" class="markdown-body">正在渲染…</article>
-							// <script src="/js/node_modules/marked/bin/marked.js"></script>
+							<!-- <script src="./js/node_modules/marked/lib/marked.esm.js"></script> -->
 							<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-							// <script src="/js/node_modules/dompurify/dist/purify.js"></script>
+							<!-- <script src="./js/node_modules/dompurify/dist/purify.js"></script> -->
 							<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 							<script>
 								// markdown text embedded from SW

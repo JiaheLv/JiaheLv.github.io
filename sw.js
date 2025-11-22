@@ -41,38 +41,41 @@ self.addEventListener('fetch', event => {
                             <title>${titleEscaped}</title>
                             <script>
                                 // 动态探测合适的 github-markdown.css 路径（兼容 user page 与 project page）
-                                <script>
-                                    // markdown text embedded from SW
-                                    const md = ${mdLiteral};
-                                    const render = () => {
-                                        const html = marked.parse(md);
-                                        const clean = DOMPurify.sanitize(html, {USE_PROFILES: {html: true}});
-                                        document.getElementById('content').innerHTML = clean;
-                                        // convert relative links/images to absolute based on the original .md location
-                                        try {
-                                            const base = new URL('${url.href}');
-                                            document.getElementById('content').querySelectorAll('a').forEach(a=>{
-                                                const href = a.getAttribute('href'); if(!href) return;
-                                                try{ const u = new URL(href, base);
-                                                    if(u.pathname.endsWith('.md')) { a.setAttribute('href', u.href); }
-                                                    else { a.setAttribute('href', u.href); a.setAttribute('target','_blank'); }
-                                                }catch(e){}
-                                            });
-                                            document.getElementById('content').querySelectorAll('img').forEach( img => {
-                                                const src = img.getAttribute('src'); 
-                                                if(!src) return; 
-                                                try{ img.src = new URL(src, base).href;}catch(e){}
-                                            });
-                                        } catch(e){}
-                                    };
-                                    (async function(){
-                                        // wait for CSS probe to finish (max ~2s)
-                                        const start = Date.now();
-                                        while(!window.__md_css_loaded && Date.now()-start < 2000) await new Promise(r=>setTimeout(r,50));
-                                        render();
-                                        // set document.title to decoded filename (plain text)
-                                        try { document.title = ${JSON.stringify(titlePlain)}; } catch(e){}
-                                    })();
+                                (function() {
+                                    // 优先使用站点中实际路径；把 /css/github-markdown.css 放在首位
+                                    const cssPaths = [
+                                        '/css/github-markdown.css',
+                                        '/github-markdown.css',
+                                        './github-markdown.css',
+                                        '../github-markdown.css',
+                                        '../../github-markdown.css'
+                                    ];
+
+                                    const maxAttempts = cssPaths.length;
+
+                                    function attemptLoad(index) {
+                                        if (index >= maxAttempts) {
+                                            console.log('无法加载 github-markdown.css，使用内置样式');
+                                            window.__md_css_loaded = false;
+                                            return;
+                                        }
+                                        const link = document.createElement('link');
+                                        link.rel = 'stylesheet';
+                                        link.href = cssPaths[index];
+                                        link.onload = () => { window.__md_css_loaded = true; };
+                                        link.onerror = () => { attemptLoad(index + 1); };
+                                        document.head.appendChild(link);
+                                    }
+                                    attemptLoad(0);
+                                    setTimeout(() => {
+                                        if (!window.__md_css_loaded) {
+                                            console.log('github-markdown.css 加载失败，使用默认样式');
+                                            window.__md_css_loaded = true;
+                                        }
+                                    }, 5000);
+                                })();
+                                // 注意：不在 head 中执行 markdown 渲染或重新声明 md
+                                // 避免与 body 中的脚本重复声明变量并在 marked 加载前执行。
                             </script>
                             <style>
                                 /* 保留布局样式，但不要覆盖主题的颜色/背景 */

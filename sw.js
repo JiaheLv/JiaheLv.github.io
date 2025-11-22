@@ -39,26 +39,49 @@ self.addEventListener('fetch', event => {
                             <meta name="viewport" content="width=device-width,initial-scale=1" />
                             <link rel="icon" href="/image/icon.jpg">
                             <title>${titleEscaped}</title>
-                            <link rel="stylesheet" href="/css/github-markdown.css">
-                            <style>
-                                /* 保留布局样式，但不要覆盖主题的颜色/背景 */
-                                body{
-                                    padding:20px;
-                                    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial;
-                                }
-                                .markdown-body{
-                                    box-sizing:border-box;
-                                    margin:0 auto;
-                                    max-width:980px;
-                                    padding:45px;
-                                    border-radius:6px;
-                                }
-                                @media(max-width:600px){
-                                    .markdown-body{
-                                        padding:20px
-                                    }
-                                }
-                            </style>
+                                                     <script>
+                                                         // 动态探测合适的 github-markdown.css 路径（兼容 user page 与 project page）
+                                                        <script>
+                                                            // markdown text embedded from SW
+                                                            const md = ${mdLiteral};
+                                                            const render = () => {
+                                                                const html = marked.parse(md);
+                                                                const clean = DOMPurify.sanitize(html, {USE_PROFILES: {html: true}});
+                                                                document.getElementById('content').innerHTML = clean;
+                                                                // convert relative links/images to absolute based on the original .md location
+                                                                try {
+                                                                    const base = new URL('${url.href}');
+                                                                    document.getElementById('content').querySelectorAll('a').forEach(a=>{
+                                                                        const href = a.getAttribute('href'); if(!href) return;
+                                                                        try{ const u = new URL(href, base);
+                                                                            if(u.pathname.endsWith('.md')) { a.setAttribute('href', u.href); }
+                                                                            else { a.setAttribute('href', u.href); a.setAttribute('target','_blank'); }
+                                                                        }catch(e){}
+                                                                    });
+                                                                    document.getElementById('content').querySelectorAll('img').forEach(img=>{
+                                                                        const src = img.getAttribute('src'); if(!src) return; try{ img.src = new URL(src, base).href;}catch(e){}
+                                                                    });
+                                                                } catch(e){}
+                                                            };
+                                                            (async function(){
+                                                                // wait for CSS probe to finish (max ~2s)
+                                                                const start = Date.now();
+                                                                while(!window.__md_css_loaded && Date.now()-start < 2000) await new Promise(r=>setTimeout(r,50));
+                                                                render();
+                                                                // set document.title to decoded filename (plain text)
+                                                                try { document.title = ${JSON.stringify(titlePlain)}; } catch(e){}
+                                                            })();
+                                                        </script>
+                                                             };
+                                                             tryLoad();
+                                                         })();
+                                                     </script>
+                                                     <style>
+                                                         /* 保留布局样式，但不要覆盖主题的颜色/背景 */
+                                                         body{ padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial; }
+                                                         .markdown-body{ box-sizing:border-box; margin:0 auto; max-width:980px; padding:45px; border-radius:6px; }
+                                                         @media(max-width:600px){ .markdown-body{ padding:20px } }
+                                                     </style>
                         </head>
                         <body>
                             <article id="content" class="markdown-body">正在渲染…</article>

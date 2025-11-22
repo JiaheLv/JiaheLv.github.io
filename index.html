@@ -116,8 +116,9 @@
         </div>
         <script>
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/js/sw.js')
-                .then(() => console.log('ServiceWorker 注册成功'))
+                // SW 已移到站点根：/sw.js，注册时设 scope='/' 以控制整个站点
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(registration => console.log('ServiceWorker 注册成功，scope=', registration.scope))
                 .catch(err => console.error('ServiceWorker 注册失败', err));
             }
         </script>

@@ -1,0 +1,30 @@
+@font-face {
+    font-family: Rhama;
+    src: url(../font/Rhama.ttf);
+}
+body{
+    background-image: url(../image/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+.main_title{
+    position: relative;
+    margin: 0 auto 0;
+    width: max-content;
+    font-family: Rhama;
+    font-size: 480%;
+    font-weight: bolder;
+}
+hr{
+    margin: 0;
+    background-color: black;
+    opacity: 1;
+    height: 5px;
+    border: none;
+}
+.note_item{
+    margin: 10%;
+    font-size: larger;
+}

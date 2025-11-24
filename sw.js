@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
                                 (function() {
                                     // 优先使用站点中实际路径；把 /css/github-markdown.css 放在首位
                                     const cssPaths = [
-                                        '/css/github-markdown.css',
+                                        '/css/github-markdown-light.css',
                                         '/github-markdown.css',
                                         './github-markdown.css',
                                         '../github-markdown.css',
@@ -77,14 +77,16 @@ self.addEventListener('fetch', event => {
                                 // 注意：不在 head 中执行 markdown 渲染或重新声明 md
                                 // 避免与 body 中的脚本重复声明变量并在 marked 加载前执行。
                             </script>
+                            <link rel="stylesheet" type="text/css" href="/css/content_pages.css">
                             <style>
-                                /* 保留布局样式，但不要覆盖主题的颜色/背景 */
-                                body{ padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial; }
-                                .markdown-body{ box-sizing:border-box; margin:0 auto; max-width:980px; padding:45px; border-radius:6px; }
-                                @media(max-width:600px){ .markdown-body{ padding:20px } }
+                                .breadcrumb{font-size:14px;color:#666;margin:8px 0 16px 0;padding-left:12px}
+                                .breadcrumb a{color:inherit;text-decoration:none}
                             </style>
                         </head>
                         <body>
+                            <h1 class="main_title">Jiahe Lv's Archive</h1>
+                            <hr>
+                            <div id="breadcrumb" class="now_position">正在加载当前位置…</div>
                             <article id="content" class="markdown-body">正在渲染…</article>
                             <script src="/js/marked.min.js"></script>
                             <script src="/js/purify.min.js"></script>
@@ -96,6 +98,45 @@ self.addEventListener('fetch', event => {
                                 document.getElementById('content').innerHTML = clean;
                                 // set document.title to decoded filename (plain text)
                                 try { document.title = ${JSON.stringify(titlePlain)}; } catch(e){}
+                                // 填充面包屑（当前位置）: 根据原始 .md 路径决定分类；把“首页”做成可点击链接
+                                try {
+                                    const _base = new URL('${url.href}');
+                                    const segs = _base.pathname.split('/').filter(Boolean);
+                                    const mapping = { 'cd_1':'笔记', 'cd_2':'项目', 'cd_3':'札记', 'cd_4':'杂记', 'cd_5':'随笔' };
+                                    const mappingFiles = { 'cd_1':'/html/BiJi_list.html', 'cd_2':'/html/XiangMu_list.html', 'cd_3':'/html/ZhaJi_list.html', 'cd_4':'/html/ZaJi_list.html', 'cd_5':'/html/SuiBi_list.html' };
+                                    let category = '笔记';
+                                    let categoryKey = null;
+                                    for (let s of segs) { if (mapping[s]) { category = mapping[s]; categoryKey = s; break; } }
+                                    const mdname = ${JSON.stringify(titlePlain)};
+                                    const crumbEl = document.getElementById('breadcrumb');
+                                    function buildCrumb(el) {
+                                        el.innerHTML = '';
+                                        el.appendChild(document.createTextNode('当前位置: '));
+                                        const a = document.createElement('a');
+                                        a.href = '/';
+                                        a.textContent = '首页';
+                                        el.appendChild(a);
+                                        el.appendChild(document.createTextNode(' > '));
+                                        // category link
+                                        if (categoryKey && mappingFiles[categoryKey]) {
+                                            const ca = document.createElement('a');
+                                            ca.href = mappingFiles[categoryKey];
+                                            ca.textContent = category;
+                                            el.appendChild(ca);
+                                        } else {
+                                            el.appendChild(document.createTextNode(category));
+                                        }
+                                        el.appendChild(document.createTextNode(' > ' + mdname));
+                                    }
+                                    if (crumbEl) {
+                                        buildCrumb(crumbEl);
+                                    } else {
+                                        const d = document.createElement('div');
+                                        d.id = 'breadcrumb'; d.className = 'breadcrumb';
+                                        buildCrumb(d);
+                                        document.body.insertBefore(d, document.getElementById('content'));
+                                    }
+                                } catch(e){}
                                 // convert relative links/images to absolute based on the original .md location
                                 (function(){
                                     try {

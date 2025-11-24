@@ -1,0 +1,62 @@
+@font-face {
+    font-family: Rhama;
+    src: url(../../font/Rhama.ttf);
+}
+html{
+    background-image: url(../../image/background.jpg);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+body{
+    margin: 1%;
+    padding: 0 1%;
+}
+.main_title{
+    position: relative;
+    margin: 0 auto 0;
+    width: max-content;
+    font-family: Rhama;
+    font-size: 480%;
+    font-weight: bolder;
+}
+hr{
+    margin: 0;
+    background-color: black;
+    opacity: 1;
+    height: 5px;
+    border: none;
+}
+.now_position{
+    margin: 10px 0 0 8%;
+    max-width: fit-content;
+    font-weight: 500;
+    font-size: large;
+}
+.now_position a{
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    border-bottom: 1px solid rgb(0, 0, 0);
+}
+.markdown-body{
+    box-sizing: border-box;
+    /* margin: 10px 3% auto; */
+    margin: 10px 10% auto;
+    padding: 10px 20px;
+    background-color: rgba(255, 228, 196, 0.4);
+    border-radius: 0.6em;
+}
+.markdown-body pre {
+    background-color: rgba(246, 248, 250, 0.2);
+}
+.markdown-body h1 {
+    border-bottom: 3px solid rgba(0, 0, 0, 0.8);
+}
+.markdown-body h2 {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.7);
+}

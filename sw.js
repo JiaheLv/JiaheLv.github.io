@@ -90,8 +90,8 @@ self.addEventListener('fetch', event => {
                             </div>
                             <article id="content" class="markdown-body">正在渲染…</article>
                             <!-- 返回顶部按钮 -->
-                            <button class="back-to-top" id="backToTop" title="返回顶部">
-                                <img src="/image/arrow-up-outline.svg"  class="back-to-top-img">
+                            <button class="back-to-top" id="backToTop">
+                                <img src="/image/arrow-up-outline.svg" class="back-to-top-img" title="返回顶部">
                             </button>
                             <script src="/js/marked.min.js"></script>
                             <script src="/js/purify.min.js"></script>

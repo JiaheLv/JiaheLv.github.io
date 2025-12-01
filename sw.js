@@ -78,16 +78,21 @@ self.addEventListener('fetch', event => {
                                 // 避免与 body 中的脚本重复声明变量并在 marked 加载前执行。
                             </script>
                             <link rel="stylesheet" type="text/css" href="/css/content_pages.css">
-                            <style>
-                                .breadcrumb{font-size:14px;color:#666;margin:8px 0 16px 0;padding-left:12px}
-                                .breadcrumb a{color:inherit;text-decoration:none}
-                            </style>
                         </head>
                         <body>
                             <h1 class="main_title">Jiahe Lv's Archive</h1>
                             <hr>
-                            <div id="breadcrumb" class="now_position">正在加载当前位置…</div>
+                            <div style="  display: flex; justify-content: space-between;">
+                                <div id="breadcrumb" class="now_position">正在加载当前位置…</div>
+                                <button class="outline_button" style="width:25px; height:25px; margin:10px 8% 0 0; padding:0;">
+                                    <img src="/image/list-outline.svg" style="width:20px;height:20px;vertical-align:middle;margin:0;padding:0;" title="目录">
+                                </button>
+                            </div>
                             <article id="content" class="markdown-body">正在渲染…</article>
+                            <!-- 返回顶部按钮 -->
+                            <button class="back-to-top" id="backToTop" title="返回顶部">
+                                <img src="/image/arrow-up-outline.svg"  class="back-to-top-img">
+                            </button>
                             <script src="/js/marked.min.js"></script>
                             <script src="/js/purify.min.js"></script>
                             <script>
@@ -153,6 +158,26 @@ self.addEventListener('fetch', event => {
                                         });
                                     } catch(e){}
                                 })();
+                            </script>
+                            <script>
+                                // 获取按钮元素
+                                const backToTopButton = document.getElementById("backToTop");
+                                // 监听滚动事件
+                                window.addEventListener("scroll", () => {
+                                    // 当页面垂直滚动超过300px时显示按钮
+                                    if (window.pageYOffset > 300) {
+                                        backToTopButton.classList.add("show");
+                                    } else {
+                                        backToTopButton.classList.remove("show");
+                                    }
+                                });
+                                // 点击按钮返回顶部
+                                backToTopButton.addEventListener("click", () => {
+                                    window.scrollTo({
+                                        top: 0,
+                                        behavior: "smooth" // 平滑滚动
+                                    });
+                                });
                             </script>
                         </body>
                         </html>`;

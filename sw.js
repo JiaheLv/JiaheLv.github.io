@@ -82,10 +82,10 @@ self.addEventListener('fetch', event => {
                         <body>
                             <h1 class="main_title">Jiahe Lv's Archive</h1>
                             <hr>
-                            <div style="  display: flex; justify-content: space-between;">
+                            <div style="display: flex; justify-content: space-between;">
                                 <div id="breadcrumb" class="now_position">正在加载当前位置…</div>
-                                <button class="outline_button" style="width:25px; height:25px; margin:10px 8% 0 0; padding:0;">
-                                    <img src="/image/list-outline.svg" style="width:20px;height:20px;vertical-align:middle;margin:0;padding:0;" title="目录">
+                                <button class="outline_button">
+                                    <img src="/image/list-outline.svg" class="outline_button_img" title="目录">
                                 </button>
                             </div>
                             <article id="content" class="markdown-body">正在渲染…</article>
@@ -108,7 +108,13 @@ self.addEventListener('fetch', event => {
                                     const _base = new URL('${url.href}');
                                     const segs = _base.pathname.split('/').filter(Boolean);
                                     const mapping = { 'cd_1':'笔记', 'cd_2':'项目', 'cd_3':'札记', 'cd_4':'杂记', 'cd_5':'随笔' };
-                                    const mappingFiles = { 'cd_1':'/html/BiJi_list.html', 'cd_2':'/html/XiangMu_list.html', 'cd_3':'/html/ZhaJi_list.html', 'cd_4':'/html/ZaJi_list.html', 'cd_5':'/html/SuiBi_list.html' };
+                                    const mappingFiles = { 
+                                        'cd_1':'/html/BiJi_list.html',
+                                        'cd_2':'/html/XiangMu_list.html',
+                                        'cd_3':'/html/ZhaJi_list.html',
+                                        'cd_4':'/html/ZaJi_list.html',
+                                        'cd_5':'/html/SuiBi_list.html'
+                                    };
                                     let category = '笔记';
                                     let categoryKey = null;
                                     for (let s of segs) { if (mapping[s]) { category = mapping[s]; categoryKey = s; break; } }

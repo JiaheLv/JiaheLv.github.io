@@ -176,9 +176,6 @@ hr{
     text-decoration: none;
     color: black;
 }
-.my_github_link:hover {
-    transform: scale(1.01);
-}
 
 .github_icon{
     margin: 0;
@@ -186,6 +183,9 @@ hr{
 
     height: 25px;
     width: auto;
+}
+.github_icon:hover{
+    transform: scale(1.05);
 }
 
 .about_me_button{
@@ -205,12 +205,11 @@ hr{
     border-style: solid;
     border-width: 3px;
 
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    
     font-size: medium;
     font-weight: bold;
 }
 .about_me_button:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     background-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
 }

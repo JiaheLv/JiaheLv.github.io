@@ -93,10 +93,10 @@ hr{
     height: 3px;
     border: none;
 }
+
 .note_list_li{
     margin: 0 15px 5px;
 }
-
 .note_list_li a{
     display: block;
     padding: 10px 15px;

@@ -32,7 +32,10 @@ export default defineConfig({
       }
     }),
     react(),
-    sitemap(), // sitemap 会自动使用 site 和 base
+    // Include sitemap only when not explicitly disabled by DISABLE_SITEMAP
+    // Some versions of @astrojs/sitemap expect 'routes' from the build which can be undefined
+    // in certain CI environments; disable sitemap generation in CI by setting DISABLE_SITEMAP=true.
+    ...(process.env.DISABLE_SITEMAP === 'true' ? [] : [sitemap()]), // sitemap 会自动使用 site 和 base
     icon() // 添加 icon 集成
   ],
   markdown: {

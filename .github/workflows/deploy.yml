@@ -35,6 +35,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Debug sitemap plugin (capture version and basic require output)
+        run: |
+          node -e "try{ console.log('NODE:', process.version); const pkg=require('@astrojs/sitemap/package.json'); console.log('sitemap package version:', pkg.version); const plugin=require('@astrojs/sitemap'); console.log('sitemap export type:', typeof plugin); console.log('plugin keys:', Object.keys(plugin||{})); } catch(e) { console.error('DEBUG ERROR', e && e.stack || e); process.exit(0); }" 2>&1 | tee debug-sitemap.log
+
+      - name: Upload debug artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-sitemap
+          path: debug-sitemap.log
+
       - name: Build Astro site
         run: |
           export NODE_ENV=production

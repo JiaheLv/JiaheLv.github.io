@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import CategoryPageLayout from '@layouts/CategorySearchTagsPageLayout.astro';
+import { getLink } from '@utils/paths';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blogs', ({ data }) => {
+    return import.meta.env.PROD ? !data.draft : true;
+  });
+  
+  // Pre-defined categories displayed on the homepage
+  const predefinedCategories = ['笔记', '项目', '杂记', '札记', '随笔'];
+  
+  // Get unique categories from posts
+  const allCategories = new Set<string>(predefinedCategories);
+  allPosts.forEach(post => {
+    if (post.data.categories) {
+      post.data.categories.forEach(category => allCategories.add(category));
+    }
+  });
+  
+  // Create a path for each category
+  return Array.from(allCategories).map(category => {
+    // Filter posts that belong to this category
+    const filteredPosts = allPosts.filter(post => 
+      post.data.categories && post.data.categories.includes(category)
+    );
+    
+    return {
+      params: { category: category.toLowerCase().replace(/\s+/g, '-') },
+      props: { category, posts: filteredPosts },
+    };
+  });
+}
+
+const { category, posts } = Astro.props;
+
+// Sort posts by date in descending order
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Format the category for display
+const displayCategory = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+// Group posts by subject
+const postsBySubject = sortedPosts.reduce((acc, post) => {
+  const subject = post.data.subject || 'General';
+  if (!acc[subject]) {
+    acc[subject] = [];
+  }
+  acc[subject].push(post);
+  return acc;
+}, {} as Record<string, typeof sortedPosts>);
+
+// Sort subjects by name (Chinese by pinyin)
+const sortedSubjects = Object.entries(postsBySubject)
+  .sort(([a], [b]) => a.localeCompare(b, 'zh'))
+  .map(([name, posts]) => ({
+    name,
+    posts: posts.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh'))
+  }));
+---
+
+<CategoryPageLayout title={`${displayCategory} 列表`}>
+  <header>
+    <h1 class="category_name">{displayCategory}</h1>
+    <p class="category_desc">
+      <!-- Showing {sortedPosts.length} post{sortedPosts.length !== 1 ? 's' : ''} in the "{displayCategory}" category -->
+      "{displayCategory}" 类目中，共有 {sortedPosts.length} 篇笔记
+    </p>
+    <!-- <div class="mt-2">
+      <a href={getLink('/categories')} class="text-indigo-600 hover:underline flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        All Categories
+      </a>
+    </div> -->
+  </header>
+
+  {sortedPosts.length === 0 ? (
+    <div class="text-center py-8">
+      <p class="text-xl text-slate-600">No posts found in this category.</p>
+    </div>
+  ) : (
+    <div class="subjects">
+      {sortedSubjects.map(({ name, posts }) => (
+        <div class="subject">
+          <h2 class="subject_name">{name}</h2>
+          <ul class="post_list">
+            {posts.map(post => (
+                <a href={getLink(`/blogs/${post.slug}`)} title={post.data.title} class="post_title" >
+                  <li class="post_item">
+                    <span class="post_date">
+                      [{post.data.pubDate.toISOString().slice(0, 7).replace('-', '/')}]
+                    </span>
+                    {post.data.title}
+                  </li>
+                </a>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )}
+</CategoryPageLayout>
+
+<style>
+  header {
+    border-bottom: 4px solid black;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  .category_name {
+    margin: 0; padding: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  .category_desc {
+    margin: 0; padding: 0;
+    color: rgb(85, 85, 85);
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  .subjects {
+    margin: 10px 10px 0;
+    padding: 0;
+
+    /* border-radius: 10px;
+    border-color: black;
+    border-style: solid;
+    border-width: 3px; */
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  .subject {
+    margin: 0; padding: 0;
+  }
+  .subject_name {
+    margin: 0 0 10px; padding: 0;
+    font-size: 1.5rem;
+    border-bottom: 2px solid black;
+  }
+  .post_item{
+    margin: 0 5px 5px;
+
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+  }
+  .post_item:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+  }
+  .post_date {
+    color: rgba(0, 0, 0, 0.7);
+  }
+</style>

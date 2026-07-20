@@ -1,0 +1,108 @@
+---
+import { isFeatureEnabled } from '@utils/config';
+
+export interface Props {
+  headings: {
+    depth: number;
+    slug: string;
+    text: string;
+  }[];
+}
+
+const { headings } = Astro.props;
+
+// Check if table of contents feature is enabled
+const isTocEnabled = isFeatureEnabled('tableOfContents');
+
+// If the feature is disabled, return early
+if (!isTocEnabled) return;
+
+// Only render h2 and h3 headings
+const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+---
+
+{toc.length > 0 && (
+  <nav class="border border-slate-200">
+    <h2>Table of Contents</h2>
+    <ul>
+      {toc.map(heading => (
+        <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
+          <a href={`#${heading.slug}`}>
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        if (id) {
+          const tocLink = document.querySelector(`.toc a[href="#${id}"]`);
+          if (tocLink) {
+            if (entry.isIntersecting) {
+              document.querySelectorAll('.toc a').forEach(link => {
+                link.classList.remove('text-indigo-600', 'font-medium');
+              });
+              tocLink.classList.add('text-indigo-600', 'font-medium');
+            }
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Track all headings that have an ID applied
+    document.querySelectorAll('h2[id], h3[id]').forEach(heading => {
+      observer.observe(heading);
+    });
+  });
+</script>
+
+<style>
+  nav {
+    margin: 0;
+    padding: 10px 15px;
+    background-color: rgba(255, 228, 196, 0.4);
+    border-radius: 0.6em;
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+  }
+  h2 {
+    margin: 0; padding: 0;
+    font-size: 1.4em;
+    border-bottom: 2px solid black;
+  }
+  ul {
+    margin-top: 5px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  ul::-webkit-scrollbar {
+    display: none;
+  }
+  a {
+    padding: 2px 3px;
+    color: #333;
+    font-weight: 400;
+  }
+  a:hover {
+    color: #000;
+    font-weight: 600;
+    text-decoration: underline;
+    background-color: rgba(255, 228, 196, 0.7);
+    border-radius: 0.3em;
+  }
+</style>

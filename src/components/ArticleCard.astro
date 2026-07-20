@@ -1,0 +1,92 @@
+---
+import type { ArticleCardProps as Props } from '@types/astro';
+import { Image } from 'astro:assets';
+import { getLink } from '@utils/paths';
+
+const { title, description, pubDate, updatedDate, heroImage, tags, author, slug } = Astro.props;
+
+const formattedDate = pubDate.toLocaleDateString('en-us', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const hasUpdated = updatedDate && updatedDate > pubDate;
+---
+
+<article class="border-2 border-black rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full" style={{backgroundColor:'rgba(255, 227, 196, 0.25)'}}>
+  {heroImage && (
+    <a href={getLink(`/blogs/${slug}`)} class="block">
+      {typeof heroImage === 'string' ? (
+        <img 
+          src={heroImage} 
+          alt={title} 
+          class="w-full h-40 object-cover"
+          width="800"
+          height="400"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <Image 
+          src={heroImage} 
+          alt={title} 
+          class="w-full h-40 object-cover"
+          width={800}
+          height={400}
+          loading="lazy"
+          decoding="async"
+          format="webp"
+          quality={80}
+        />
+      )}
+    </a>
+  )}
+  <div class="p-5 flex flex-col flex-grow">
+    <!-- Title area -->
+    <div class="m-0 p-0">
+      <a href={getLink(`/blogs/${slug}`)} class="hover:underline decoration-black">
+        <h2 class="mb-1 text-xl font-bolder text-black">{title}</h2>
+      </a>
+    </div>
+    
+    <!-- Description area -->
+    <div class="m-0 p-0 flex-grow">
+      <p class="mb-2 text-slate-600 text-sm line-clamp-3">
+        {description}
+      </p>
+    </div>
+    
+    <!-- Tags area -->
+    <div class="mb-2">
+      <div class="flex flex-wrap gap-1">
+        {tags && tags.length > 0 && tags.slice(0, 3).map(tag => (
+          <a
+            href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
+            class="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600"
+            style={{backgroundColor: 'rgba(255, 228, 196, 0.7)'}}
+          >
+            {tag}
+          </a>
+        ))}
+        {tags && tags.length > 3 && 
+          <span class="text-xs px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full" style={{backgroundColor: 'rgba(255, 228, 196, 0.8)'}}>
+            +{tags.length - 3}
+          </span>
+        }
+      </div>
+    </div>
+    
+    <!-- Author and date area -->
+    <div class="m-0 pt-2 border-t-2 border-black">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-slate-500 truncate max-w-[50%]">
+          By {author || 'Anonymous'}
+        </span>
+        <time datetime={pubDate.toISOString()} class="text-xs text-slate-500">
+          {formattedDate}
+        </time>
+      </div>
+    </div>
+  </div>
+</article>

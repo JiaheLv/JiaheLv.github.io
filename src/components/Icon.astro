@@ -1,0 +1,77 @@
+---
+// Import all SVG icon components
+import Tag from '../assets/icons/tag.svg?raw';
+import User from '../assets/icons/user.svg?raw';
+import MapPin from '../assets/icons/map-pin.svg?raw';
+import Calendar from '../assets/icons/calendar.svg?raw';
+import Clock from '../assets/icons/clock.svg?raw';
+import Share from '../assets/icons/share.svg?raw';
+import Twitter from '../assets/icons/twitter.svg?raw';
+import Facebook from '../assets/icons/facebook.svg?raw';
+import Linkedin from '../assets/icons/linkedin.svg?raw';
+import Wechat from '../assets/icons/wechat.svg?raw';
+import Link from '../assets/icons/link.svg?raw';
+import Search from '../assets/icons/search.svg?raw';
+import Book from '../assets/icons/book.svg?raw';
+import Menu from '../assets/icons/menu.svg?raw';
+import X from '../assets/icons/x.svg?raw';
+import Github from '../assets/icons/github.svg?raw';
+import FileText from '../assets/icons/file-text.svg?raw';
+import Box from '../assets/icons/box.svg?raw';
+import Home from '../assets/icons/home.svg?raw';
+import Rss from '../assets/icons/rss.svg?raw';
+
+// Use auto-generated Icon type
+import type { Icon as IconType } from 'virtual:astro-icon';
+
+interface Props {
+  name: IconType;
+  class?: string;
+  size?: number;
+  id?: string;
+}
+
+const { name, class: className = "", size = 24, id } = Astro.props;
+
+// Icon mapping table
+const icons = {
+  'tag': Tag,
+  'user': User,
+  'map-pin': MapPin,
+  'calendar': Calendar,
+  'clock': Clock,
+  'share': Share,
+  'twitter': Twitter,
+  'facebook': Facebook,
+  'linkedin': Linkedin,
+  'wechat': Wechat,
+  'link': Link,
+  'search': Search,
+  'book': Book,
+  'menu': Menu,
+  'x': X,
+  'github': Github,
+  'file-text': FileText,
+  'box': Box,
+  'home': Home,
+  'rss': Rss
+};
+
+// Set styles
+const styles = size ? `width: ${size}px; height: ${size}px;` : undefined;
+
+// Get corresponding icon
+const iconSvg = icons[name] || null;
+---
+
+<span id={id} class={className} style={styles}>
+  {iconSvg ? (
+    <Fragment set:html={iconSvg} />
+  ) : (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={className}>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+      <line x1="12" y1="8" x2="12" y2="16" />
+    </svg>
+  )}
+</span> 

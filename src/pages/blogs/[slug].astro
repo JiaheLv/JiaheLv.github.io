@@ -1,0 +1,170 @@
+---
+import ThreeColumnLayout from '@layouts/ThreeColumnLayout.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import Icon from '@components/Icon.astro';
+import Comments from '@components/Comments.astro';
+import { getCollection } from 'astro:content';
+import { getHeadings, calculateReadingTime } from '@utils/content';
+import { getSiteConfig, isFeatureEnabled } from '@utils/config';
+import { getLink } from '@utils/paths';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blogs', ({ data }) => {
+    return import.meta.env.PROD ? !data.draft : true;
+  });
+
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Get site configuration
+const siteConfig = getSiteConfig();
+
+// Extract metadata from the blog post
+const { title, description, pubDate, updatedDate, heroImage, tags, author, location } = entry.data;
+
+// Format dates
+const formattedDate = pubDate.toLocaleDateString('en-us', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const updatedFormatted = updatedDate?.toLocaleDateString('en-us', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const hasUpdated = updatedDate && updatedDate > pubDate;
+
+// Get headings for table of contents
+const headings = await getHeadings(entry.body);
+
+// Calculate reading time
+const readingTime = calculateReadingTime(entry.body);
+
+// Current URL for sharing
+const url = Astro.url.href;
+
+// Check if features are enabled
+const isReadingTimeEnabled = isFeatureEnabled('readingTime');
+---
+
+<ThreeColumnLayout title={`${title}`} description={description} image={heroImage} article={true} toc={headings}>
+  <div class="article_wrapper">
+    <article class="article">
+      <header class="mb-8">
+        {heroImage && (
+          <img 
+            src={heroImage} 
+            alt={title}
+            class="w-full h-64 object-cover rounded-lg mb-6"
+            width="1200"
+            height="600"
+          />
+        )}
+        <h1 class="text-3xl sm:text-4xl font-bold mb-4">{title}</h1>
+        <p class="text-lg text-slate-600 mb-4">{description}</p>
+        <div class="article_tags">
+          {tags && tags.map(tag => (
+            <a
+              href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
+              class="article_tag"
+            >
+              <Icon name="tag" class="w-4 h-4 mr-1" />
+              {tag}
+            </a>
+          ))}
+        </div>
+        <div class="flex flex-wrap items-center text-slate-600 text-sm gap-4 mb-4">
+          <div class="flex items-center">
+            <Icon name="user" class="w-4 h-4 mr-1" />
+            <span>{author || siteConfig.author}</span>
+          </div>
+          
+          <div class="flex items-center">
+            <Icon name="map-pin" class="w-4 h-4 mr-1" />
+            <span>{location}</span>
+          </div>
+          
+          <div class="flex items-center">
+            <Icon name="calendar" class="w-4 h-4 mr-1" />
+            <span class="ml-1">
+              创建于 <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+            </span>
+            {hasUpdated && (
+              <span class="ml-1">
+                | 更新于 <time datetime={updatedDate.toISOString()}>{updatedFormatted}</time>
+              </span>
+            )}
+          </div>
+          
+          {isReadingTimeEnabled && (
+            <div class="flex items-center">
+              <Icon name="clock" class="w-4 h-4 mr-1" />
+              <span>{readingTime}</span>
+            </div>
+          )}
+
+        </div>
+      </header>
+      
+      <!-- Mobile Table of Contents (only visible on mobile and tablet) -->
+      <div class="xl:hidden mb-8">
+        <TableOfContents headings={headings} />
+      </div>
+        
+      <!-- Article Content -->
+      <div class="prose prose-lg prose-slate prose-headings:scroll-mt-20">
+        <Content />
+      </div>
+      
+      
+      <!-- Comments section -->
+      <Comments slug={entry.slug} />
+      
+    </article>
+    <!-- <div class="table_of_contents">
+        <TableOfContents headings={headings} />
+    </div> -->
+  </div>
+  <!-- Copy success notification -->
+  <!-- <div id="copyNotification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transform translate-y-16 transition-transform duration-300 z-50">
+    Link copied to clipboard!
+  </div> -->
+</ThreeColumnLayout>
+
+<style>
+
+  .article_tags {
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .article_tag {
+    background-color: rgba(255, 228, 196, 0.7);
+    padding: 4px 8px;
+    border-radius: 1.5rem;
+    font-size: 0.9em;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .table_of_contents {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 80px;
+  }
+</style>

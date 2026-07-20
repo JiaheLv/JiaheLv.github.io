@@ -1,0 +1,51 @@
+{
+  "site": {
+    "title": "Jiahe Lv's Archive",
+    "description": "A personal blog website",
+    "url": "https://jiahelv.github.io",
+    "author": "Jiahe Lv",
+    "email": "2661743419@qq.com",
+    "logo": "/logo.svg",
+    "homeTitle": "Jiahe Lv's Archive",
+    "homeSubtitle": "Welcome to my personal space on the web.",
+    "blogSubtitle": "Thoughts, ideas, and knowledge on technology, programming, and design.",
+    "brandTitle": "Jiahe Lv's Archive"
+  },
+  "giscus": {
+    "enabled": true,
+    "repo": "JiaheLv/JiaheLv.github.io",
+    "repoId": "R_kgDOOl9Jtw",
+    "category": "General",
+    "categoryId": "DIC_kwDOOl9Jt84Cp3pA",
+    "mapping": "pathname",
+    "strict": "0",
+    "theme": "preferred_color_scheme",
+    "reactionsEnabled": true,
+    "emitMetadata": false,
+    "inputPosition": "top",
+    "lang": "en",
+    "loading": "lazy"
+  },
+  "seo": {
+    "openGraph": {
+      "twitterCreator": "@yourusername",
+      "defaultImageWidth": 1200,
+      "defaultImageHeight": 630
+    },
+    "analytics": {
+      "googleAnalyticsId": "",
+      "baiduAnalyticsId": ""
+    }
+  },
+  "social": {
+    "github": "https://github.com/JiaheLv",
+    "linkedin": "https://www.linkedin.com/in/gerrad-zhang-452a15216/"
+  },
+  "features": {
+    "darkMode": false,
+    "tableOfContents": true,
+    "readingTime": true,
+    "search": true,
+    "comments": true
+  }
+} 

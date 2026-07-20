@@ -1,0 +1,148 @@
+---
+import TPL from '@layouts/CategorySearchTagsPageLayout.astro';
+import { getCollection } from 'astro:content';
+import { getLink } from '@utils/paths';
+import { getSiteConfig} from '@utils/config';
+import pkg from 'pinyin';
+// @ts-ignore
+const pinyinFn = pkg.pinyin;
+
+// Get site configuration
+const siteConfig = getSiteConfig();
+
+// Helper: get pinyin first letter for a character, or its uppercase for ASCII
+function getPinyinFirstLetter(char: string): string {
+  const code = char.charCodeAt(0);
+  // ASCII letters: return uppercase
+  if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+    return char.toUpperCase();
+  }
+  // Chinese characters: get pinyin first letter
+  try {
+    const result = pinyinFn(char, { style: pinyinFn.STYLE_FIRST_LETTER });
+    if (result && result[0] && result[0][0]) {
+      return result[0][0].toUpperCase();
+    }
+  } catch {}
+  // Fallback: return the character itself
+  return char;
+}
+
+// Helper: convert full tag string to pinyin sort key (lowercase, no tones)
+function getTagSortKey(tag: string): string {
+  const chars: string[] = [];
+  for (const ch of tag) {
+    const code = ch.charCodeAt(0);
+    // ASCII letters and digits: keep as lowercase
+    if ((code >= 48 && code <= 57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+      chars.push(ch.toLowerCase());
+    } else {
+      // Chinese or other: convert to pinyin (normal = no tones)
+      try {
+        const result = pinyinFn(ch, { style: pinyinFn.STYLE_NORMAL });
+        if (result && result[0] && result[0][0]) {
+          chars.push(result[0][0].toLowerCase());
+        } else {
+          chars.push(ch);
+        }
+      } catch {
+        chars.push(ch);
+      }
+    }
+  }
+  return chars.join('');
+}
+
+// Get all blog posts
+const allPosts = await getCollection('blogs', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// Extract and count all tags from blog posts
+const blogTagCounts = allPosts.reduce((acc, post) => {
+  post.data.tags.forEach(tag => {
+    acc[tag] = (acc[tag] || 0) + 1;
+  });
+  return acc;
+}, {} as Record<string, number>);
+
+// Use blog tag counts directly
+const tagCounts = { ...blogTagCounts };
+
+// Sort tags by count in descending order
+const sortedTags = Object.entries(tagCounts)
+  .sort(([, a], [, b]) => b - a)
+  .map(([tag, count]) => ({ tag, count }));
+
+// Group tags by pinyin first letter, sorted alphabetically within each group
+const tagsByLetter = sortedTags.reduce((acc, { tag, count }) => {
+  const firstLetter = getPinyinFirstLetter(tag.charAt(0));
+  if (!acc[firstLetter]) {
+    acc[firstLetter] = [];
+  }
+  acc[firstLetter].push({ tag, count });
+  // Sort tags within this group: English before Chinese, then by pinyin sort key
+  acc[firstLetter].sort((a, b) => {
+    const aIsAscii = /^[a-zA-Z]/.test(a.tag);
+    const bIsAscii = /^[a-zA-Z]/.test(b.tag);
+    if (aIsAscii !== bIsAscii) return aIsAscii ? -1 : 1;
+    return getTagSortKey(a.tag).localeCompare(getTagSortKey(b.tag));
+  });
+  return acc;
+}, {} as Record<string, Array<{ tag: string; count: number }>>);
+
+// Sort the letters
+const sortedLetters = Object.keys(tagsByLetter).sort();
+---
+
+<TPL title=`Tags | ${siteConfig.title}`>
+  <header class="max-w-4xl mx-auto border-b-4 border-black mb-8">
+    <h1 class="text-4xl font-bold mb-4">Tags</h1>
+    <p class="text-lg text-slate-600">
+      Browse all topics and subject areas covered in this blog.
+    </p>
+  </header>
+
+  <div class="max-w-4xl mx-auto mb-8">
+    <div class="flex flex-wrap gap-3">
+      {sortedTags.map(({ tag, count }) => (
+        <a
+          href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
+          class="text-sm px-4 py-2 text-black rounded-full flex items-center hover:text-black hover:underline decoration-black"
+          style="background-color: rgba(255, 228, 196, 0.7)"
+        >
+          <span>{tag}</span>
+          <span class="ml-2 text-black rounded-full px-2 py-0.5 text-xs"
+          style="background-color: rgba(255, 228, 196, 1.0)">
+            {count}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold mb-6">Browse Tags Alphabetically</h2>
+    
+    <div class="grid gap-8 md:grid-cols-2">
+      {sortedLetters.map(letter => (
+        <div>
+          <h3 class="text-2xl font-bold mb-4 border-b-2 border-black pb-2">{letter}</h3>
+          <ul class="space-y-2">
+            {tagsByLetter[letter].map(({ tag, count }) => (
+              <li class="text-xl">
+                <a 
+                  href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
+                  class="text-black flex justify-between items-center hover:text-black hover:underline decoration-black transition-colors"
+                >
+                  <span>{tag}</span>
+                  <span class="text-sm text-slate-500">{count} items</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</TPL> 

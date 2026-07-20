@@ -1,0 +1,89 @@
+---
+import { SEO } from 'astro-seo';
+import '../styles/global.css';
+import { getSiteConfig } from '@utils/config';
+import { getLink } from '@utils/paths';
+import logoSvg from '../assets/icons/Jiahe-Lv-s-Archive.svg?raw';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+}
+
+// Get site configuration
+const siteConfig = getSiteConfig();
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  image = '/images/default-social.png',
+  article = false
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href={getLink("/favicon.ico")} />
+    <link rel="apple-touch-icon" href={getLink("/favicon.ico")} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="template-id" content="product-whoami" />
+
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonicalURL.toString()}
+      openGraph={{
+        basic: {
+          title: title,
+          type: article ? 'article' : 'website',
+          image: image.startsWith('http') ? image : new URL(image, Astro.site).toString()
+        },
+        optional: {
+          description: description,
+          siteName: siteConfig.title,
+        },
+        article: article ? {
+          authors: [siteConfig.author],
+        } : undefined
+      }}
+      twitter={{
+        card: 'summary_large_image',
+        title: title,
+        description: description,
+        image: image.startsWith('http') ? image : new URL(image, Astro.site).toString(),
+        creator: siteConfig.author
+      }}
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org/",
+      "@type": "WebSite",
+      "name": siteConfig.title,
+      "url": siteConfig.url,
+      "author": {
+        "@type": "Person",
+        "name": siteConfig.author
+      }
+    })} />
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-white text-slate-900">
+    <div class="site_logo">
+      <a href="/" title="首页">
+        <Fragment set:html={logoSvg} />
+      </a>
+    </div>
+    <!-- <hr class="site_hr"> -->
+    <slot />
+  </body>
+</html>

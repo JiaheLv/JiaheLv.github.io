@@ -1,0 +1,204 @@
+---
+import HomePageLayout from '@layouts/HomePageLayout.astro';
+import ArticleListItem from '@components/ArticleListItem.astro';
+import { getCollection } from 'astro:content';
+import { getSiteConfig } from '@utils/config';
+
+// Get all blog posts
+const allPosts = await getCollection('blogs', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// Sort posts by date in descending order (newest first)
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Filter posts by the 5 category groups
+const notesPosts = sortedPosts.filter(post =>
+  post.data.categories?.includes('笔记')
+);
+const projectPosts = sortedPosts.filter(post =>
+  post.data.categories?.includes('项目')
+);
+const miscPosts = sortedPosts.filter(post =>
+  post.data.categories?.includes('杂记')
+);
+const essaysPosts = sortedPosts.filter(post =>
+  post.data.categories?.includes('札记')
+);
+const casualPosts = sortedPosts.filter(post =>
+  post.data.categories?.includes('随笔')
+);
+
+// Get site configuration
+const siteConfig = getSiteConfig();
+
+// Format date helper
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-us', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+---
+
+<HomePageLayout title={`${siteConfig.title}`}>
+  <!-- 笔记 -->
+  <fragment slot="notes" class="articles">
+    <h2><a href="/categories/笔记" title="查看全部" class="category">笔记</a></h2>
+    {notesPosts.length > 0 ? (
+      <ul>
+        {notesPosts.map(post => (
+          <ArticleListItem
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            location={post.data.location}
+            slug={post.slug}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="no_item">暂无笔记内容</p>
+    )}
+  </fragment>
+
+  <!-- 项目 -->
+  <fragment slot="projects" class="articles">
+    <h2><a href="/categories/项目" title="查看全部" class="category">项目</a></h2>
+    {projectPosts.length > 0 ? (
+      <ul>
+        {projectPosts.map(post => (
+          <ArticleListItem
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            location={post.data.location}
+            slug={post.slug}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="no_item">暂无项目内容</p>
+    )}
+  </fragment>
+
+  <!-- 杂记 -->
+  <fragment slot="misc" class="articles">
+    <h2><a href="/categories/杂记" title="查看全部" class="category">杂记</a></h2>
+    {miscPosts.length > 0 ? (
+      <ul>
+        {miscPosts.map(post => (
+          <ArticleListItem
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            location={post.data.location}
+            slug={post.slug}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="no_item">暂无杂记内容</p>
+    )}
+  </fragment>
+
+  <!-- 札记 -->
+  <fragment slot="essays" class="articles">
+    <h2><a href="/categories/札记" title="查看全部" class="category">札记</a></h2>
+    {essaysPosts.length > 0 ? (
+      <ul>
+        {essaysPosts.map(post => (
+          <ArticleListItem
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            location={post.data.location}
+            slug={post.slug}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="no_item">暂无札记内容</p>
+    )}
+  </fragment>
+
+  <!-- 随笔 -->
+  <fragment slot="casual" class="articles">
+    <h2><a href="/categories/随笔" title="查看全部" class="category">随笔</a></h2>
+    {casualPosts.length > 0 ? (
+      <ul>
+        {casualPosts.map(post => (
+          <ArticleListItem
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            updatedDate={post.data.updatedDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            location={post.data.location}
+            slug={post.slug}
+          />
+        ))}
+      </ul>
+    ) : (
+      <p class="no_item">暂无随笔内容</p>
+    )}
+  </fragment>
+</HomePageLayout>
+
+<style>
+  .articles {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .articles ul {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    touch-action: pan-y;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .articles ul::-webkit-scrollbar {
+    display: none;
+  }
+  h2{
+      margin-top: 0;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.9);
+      font-weight: 600;
+      font-size: 1.5rem;
+  }
+  .category {
+    color: black;
+  }
+  .no_item {
+    margin: 0;
+    padding: 0 10px;
+    font-weight: 500;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.75);
+  }
+</style>

@@ -1,0 +1,49 @@
+{
+  "name": "modern-astro-blog",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^3.0.0",
+    "@astrojs/react": "^3.0.0",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.0.0",
+    "@astrojs/tailwind": "^5.0.0",
+    "@iconify-json/heroicons": "^1.2.2",
+    "astro": "^4.0.0",
+    "astro-icon": "^1.1.5",
+    "astro-seo": "^0.8.3",
+    "fuse.js": "^7.1.0",
+    "pinyin": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-toc": "^9.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true,
+    "sharp@0.33.5": true
+  }
+}

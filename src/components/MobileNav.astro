@@ -1,0 +1,82 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getSiteConfig, getSocialConfig } from '@utils/config';
+import { getLink } from '@utils/paths';
+
+// 获取站点配置
+const siteConfig = getSiteConfig();
+const socialConfig = getSocialConfig();
+
+// Logo和品牌标题
+const logo = siteConfig.logo || '/logo.svg';
+const brandTitle = siteConfig.brandTitle || siteConfig.title;
+
+// 确保logo路径正确
+const logoPath = logo.startsWith('http') ? logo : getLink(logo);
+
+// 当前路径
+const pathname = Astro.url.pathname;
+
+// 检查路径是否活跃
+function isActive(path: string): boolean {
+  if (path === '/') {
+    return pathname === path;
+  }
+  return pathname.startsWith(path);
+}
+---
+
+<div id="mobile-nav" class="fixed inset-0 z-50 bg-white hidden flex-col overflow-auto">
+  <div class="border-b border-slate-200 p-4 flex items-center justify-between">
+    <a href={getLink('/')} class="flex items-center gap-2 text-xl font-bold">
+      {logoPath && <img src={logoPath} alt="Logo" class="h-8 w-8" />}
+      <span>{brandTitle}</span>
+    </a>
+    <button id="close-mobile-nav" class="p-2 rounded-lg hover:bg-slate-100">
+      <Icon name="heroicons:x-mark" class="h-6 w-6" />
+    </button>
+  </div>
+  <div class="p-4 flex-1">
+    <nav class="mb-8">
+      <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Navigation</h3>
+      <a href={getLink('/')} class="block p-2 hover:bg-slate-100 rounded-lg">Home</a>
+      <a href={getLink('/blogs')} class="block p-2 hover:bg-slate-100 rounded-lg">Blog</a>
+      <a href={getLink('/about')} class="block p-2 hover:bg-slate-100 rounded-lg">About</a>
+    </nav>
+    
+    <div class="mb-8">
+      <h3 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Categories</h3>
+      <a href={getLink('/categories')} class="block p-2 hover:bg-slate-100 rounded-lg">All Categories</a>
+      <a href={getLink('/tags')} class="block p-2 hover:bg-slate-100 rounded-lg">All Tags</a>
+    </div>
+  </div>
+  <div class="border-t border-slate-200 p-4">
+    <div class="flex items-center justify-center gap-4">
+      {socialConfig.github && (
+        <a href={socialConfig.github} class="p-2 rounded-full hover:bg-slate-100" target="_blank" rel="noopener">
+          <Icon name="heroicons:link" class="h-5 w-5" />
+        </a>
+      )}
+      {socialConfig.linkedin && (
+        <a href={socialConfig.linkedin} class="p-2 rounded-full hover:bg-slate-100" target="_blank" rel="noopener">
+          <Icon name="heroicons:link" class="h-5 w-5" />
+        </a>
+      )}
+      <a href={getLink('/api/rss.xml')} class="p-2 rounded-full hover:bg-slate-100" aria-label="RSS">
+        <Icon name="heroicons:rss" class="h-5 w-5" />
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const closeBtn = document.getElementById('close-mobile-nav');
+  const mobileNav = document.getElementById('mobile-nav');
+  
+  if (closeBtn && mobileNav) {
+    closeBtn.addEventListener('click', () => {
+      mobileNav.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    });
+  }
+</script>

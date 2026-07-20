@@ -46,10 +46,18 @@ jobs:
           name: debug-sitemap
           path: debug-sitemap.log
 
-      - name: Build Astro site
+      - name: Build Astro site (capture log)
         run: |
           export NODE_ENV=production
-          npm run build
+          # Capture build output to file so we can upload logs even if the build fails
+          npm run build 2>&1 | tee build.log || true
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

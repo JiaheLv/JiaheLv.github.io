@@ -43,6 +43,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Ensure Pages ignores Jekyll (.nojekyll)
+        run: |
+          # Create a .nojekyll file to prevent GitHub Pages from processing the site with Jekyll
+          if [ -d "./dist" ]; then
+            touch ./dist/.nojekyll
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

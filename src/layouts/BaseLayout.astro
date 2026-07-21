@@ -31,6 +31,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href={getLink("/favicon.svg")} />
+    <!-- 传统浏览器 fallback -->
+    <link rel="icon" type="image/x-icon" href={getLink("/favicon.ico")} sizes="48x48" />
     <link rel="apple-touch-icon" href={getLink("/favicon.svg")} />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />

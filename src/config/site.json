@@ -14,16 +14,16 @@
   "giscus": {
     "enabled": true,
     "repo": "JiaheLv/JiaheLv.github.io",
-    "repoId": "R_kgDOOl9Jtw",
-    "category": "General",
-    "categoryId": "DIC_kwDOOl9Jt84Cp3pA",
+    "repoId": "R_kgDOTeDzHA",
+    "category": "Announcements",
+    "categoryId": "DIC_kwDOTeDzHM4DBsRz",
     "mapping": "pathname",
     "strict": "0",
     "theme": "preferred_color_scheme",
     "reactionsEnabled": true,
     "emitMetadata": false,
     "inputPosition": "top",
-    "lang": "en",
+    "lang": "zh-CN",
     "loading": "lazy"
   },
   "seo": {

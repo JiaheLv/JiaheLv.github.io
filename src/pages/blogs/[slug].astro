@@ -26,7 +26,7 @@ const { Content } = await entry.render();
 const siteConfig = getSiteConfig();
 
 // Extract metadata from the blog post
-const { title, description, pubDate, updatedDate, heroImage, tags, author, location } = entry.data;
+const { title, description, pubDate, updatedDate, heroImage, tags, categories, author, location } = entry.data;
 
 // Format dates
 const formattedDate = pubDate.toLocaleDateString('en-us', {

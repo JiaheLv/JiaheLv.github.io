@@ -23,6 +23,6 @@ export async function GET(context: APIContext) {
       description: post.data.description,
       pubDate: post.data.pubDate,
     })),
-    customData: `<language>en-us</language>`,
+    customData: `<language>zh-cn</language>`,
   });
 } 

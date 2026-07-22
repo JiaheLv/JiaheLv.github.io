@@ -1,7 +1,7 @@
 ---
 import { SEO } from 'astro-seo';
 import '../styles/global.css';
-import { getSiteConfig } from '@utils/config';
+import { getSiteConfig, getSeoConfig } from '@utils/config';
 import { getLink } from '@utils/paths';
 import logoSvg from '../assets/icons/Jiahe-Lv-s-Archive.svg?raw';
 
@@ -10,16 +10,25 @@ export interface Props {
   description?: string;
   image?: string;
   article?: boolean;
+  pubDate?: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  category?: string;
 }
 
 // Get site configuration
 const siteConfig = getSiteConfig();
+const seoConfig = getSeoConfig();
 
 const {
   title = siteConfig.title,
   description = siteConfig.description,
   image = '/images/default-social.png',
-  article = false
+  article = false,
+  pubDate,
+  updatedDate,
+  tags,
+  category
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
@@ -37,7 +46,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="author" content={siteConfig.author} />
-    <meta name="template-id" content="product-whoami" />
+    <meta property="og:locale" content="zh_CN" />
 
     <SEO
       title={title}
@@ -55,6 +64,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
         },
         article: article ? {
           authors: [siteConfig.author],
+          publishedTime: pubDate?.toISOString(),
+          modifiedTime: updatedDate?.toISOString(),
+          tags: tags,
+          section: category,
         } : undefined
       }}
       twitter={{
@@ -62,7 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
         title: title,
         description: description,
         image: image.startsWith('http') ? image : new URL(image, Astro.site).toString(),
-        creator: siteConfig.author
+        creator: seoConfig.openGraph.twitterCreator
       }}
     />
 

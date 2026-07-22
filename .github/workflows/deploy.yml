@@ -1,4 +1,4 @@
-name: Deploy Demo to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -35,36 +35,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Debug sitemap plugin (capture version and basic require output)
-        run: |
-          node -e "try{ console.log('NODE:', process.version); const pkg=require('@astrojs/sitemap/package.json'); console.log('sitemap package version:', pkg.version); const plugin=require('@astrojs/sitemap'); console.log('sitemap export type:', typeof plugin); console.log('plugin keys:', Object.keys(plugin||{})); } catch(e) { console.error('DEBUG ERROR', e && e.stack || e); process.exit(0); }" 2>&1 | tee debug-sitemap.log
-
-      - name: Upload debug artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-sitemap
-          path: debug-sitemap.log
-
-      - name: Build Astro site (capture log)
-        run: |
-          export NODE_ENV=production
-          # Capture build output to file so we can upload logs even if the build fails
-          npm run build 2>&1 | tee build.log || true
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Build Astro site
+        run: |
+          export NODE_ENV=production
+          npm run build
+
       - name: Ensure Pages ignores Jekyll (.nojekyll)
         run: |
-          # Create a .nojekyll file to prevent GitHub Pages from processing the site with Jekyll
           if [ -d "./dist" ]; then
             touch ./dist/.nojekyll
           fi

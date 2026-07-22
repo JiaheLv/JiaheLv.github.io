@@ -109,13 +109,15 @@ export function getSiteConfig(): DynamicSiteConfig {
     case 'DEMO_GITHUB_PAGES':
     case 'GITHUB_PAGES':
       // 处理 GitHub Pages 部署
+      // GitHub Pages URL 统一使用小写（GitHub 用户名在 URL 中不区分大小写）
+      const githubUser = githubActor.toLowerCase();
       // 如果仓库名为 <username>.github.io，则为个人/组织站点，基础路径为根 '/'
-      if (githubRepoName.toLowerCase() === `${githubActor.toLowerCase()}.github.io`) {
-        dynamicUrl = `https://${githubActor}.github.io`;
+      if (githubRepoName.toLowerCase() === `${githubUser}.github.io`) {
+        dynamicUrl = `https://${githubUser}.github.io`;
         dynamicBase = '/';
       } else {
         // 项目站点： https://<username>.github.io/<repo-name>/
-        dynamicUrl = `https://${githubActor}.github.io`;
+        dynamicUrl = `https://${githubUser}.github.io`;
         dynamicBase = `/${githubRepoName}`;
       }
       break;

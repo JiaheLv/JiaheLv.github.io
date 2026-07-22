@@ -23,18 +23,18 @@ import { getLink } from '@utils/paths';
           <span>Go Home</span>
         </a>
         <a 
-          href={getLink('/blogs')} 
-          class="flex items-center justify-center gap-2 px-6 py-4 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors"
-        >
-          <Icon name="heroicons:document-text" class="h-5 w-5" />
-          <span>Read Blog</span>
-        </a>
-        <a 
           href={getLink('/categories')} 
           class="flex items-center justify-center gap-2 px-6 py-4 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors"
         >
-          <Icon name="heroicons:tag" class="h-5 w-5" />
+          <Icon name="heroicons:document-text" class="h-5 w-5" />
           <span>Browse Categories</span>
+        </a>
+        <a 
+          href={getLink('/tags')} 
+          class="flex items-center justify-center gap-2 px-6 py-4 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors"
+        >
+          <Icon name="heroicons:tag" class="h-5 w-5" />
+          <span>Browse Tags</span>
         </a>
       </div>
       

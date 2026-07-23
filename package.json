@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "npm run generate-search-data && astro build",
+    "build": "astro build",
     "preview": "astro preview",
-    "lint": "eslint .",
-    "generate-search-data": "node scripts/generate-search-data.mjs"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",

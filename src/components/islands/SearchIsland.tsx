@@ -242,7 +242,7 @@ const SearchIsland = ({
       
       try {
         // 1. Load search data
-        const response = await fetch(getLink(`/data/search-data.json?v=${dataTimestamp}`));
+        const response = await fetch(getLink(`/api/search.json?v=${dataTimestamp}`));
         if (!response.ok) {
           throw new Error('Failed to fetch search data');
         }

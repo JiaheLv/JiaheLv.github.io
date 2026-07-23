@@ -81,16 +81,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || 'demo' }}
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: 'npm'
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm ci
       - name: Build
@@ -98,7 +98,7 @@ jobs:
         env:
           DEPLOY_BRANCH: demo
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
 
@@ -337,7 +337,7 @@ npm run preview
 
 **解决方案**：
 - 更新`.github/workflows/deploy.yml`中的Actions版本，特别是：
-  - `actions/upload-pages-artifact@v3`（或最新版本）
+  - `actions/upload-pages-artifact@v4`（或最新版本）
   - `actions/deploy-pages@v4`（或最新版本）
 
 ### 问题：导航链接在开发环境和生产环境行为不一致
@@ -406,7 +406,7 @@ jobs:
     # ... 其他配置 ...
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || 'demo' }}
       # ... 其他步骤 ...

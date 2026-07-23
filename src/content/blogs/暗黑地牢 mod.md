@@ -64,7 +64,7 @@ location: "Tianjin, China"
 
 [链接：https://steamcommunity.com/sharedfiles/filedetails/?id=2814682822](https://steamcommunity.com/sharedfiles/filedetails/?id=2814682822)
 
-![图片](../images/中文字体重做.png)
+![图片](/images/blogs/中文字体重做.png)
 
 ## 机制
 
@@ -72,7 +72,7 @@ location: "Tianjin, China"
 
 [链接：https://steamcommunity.com/sharedfiles/filedetails/?id=2135686607](https://steamcommunity.com/sharedfiles/filedetails/?id=2135686607)
 
-![图片](../images/大背包堆叠整合包.png)
+![图片](/images/blogs/大背包堆叠整合包.png)
 
 ## UI 界面
 
@@ -82,7 +82,7 @@ location: "Tianjin, China"
 
 [链接：https://steamcommunity.com/sharedfiles/filedetails/?id=2184315231](https://steamcommunity.com/sharedfiles/filedetails/?id=2184315231)
 
-![图片](../images/Helltaker_NPC.png)
+![图片](/images/blogs/Helltaker_NPC.png)
 
 ### 战斗 UI
 
@@ -90,7 +90,7 @@ location: "Tianjin, China"
 
 [链接：https://steamcommunity.com/sharedfiles/filedetails/?id=2451087872](https://steamcommunity.com/sharedfiles/filedetails/?id=2451087872)
 
-![图片](../images/废墟图书馆风格战斗UI替换.png)
+![图片](/images/blogs/废墟图书馆风格战斗UI替换.png)
 
 ### 地图背景
 
@@ -98,4 +98,4 @@ location: "Tianjin, China"
 
 [链接：https://steamcommunity.com/workshop/filedetails/?id=3362582428](https://steamcommunity.com/workshop/filedetails/?id=3362582428)
 
-![图片](../images/Immersive%20Area%20Backgrounds.png)
+![图片](/images/blogs/Immersive%20Area%20Backgrounds.png)

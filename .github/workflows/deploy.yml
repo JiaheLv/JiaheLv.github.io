@@ -22,7 +22,7 @@ jobs:
       DEPLOY_ENV: GITHUB_PAGES
       GITHUB_REPO_NAME: ${{ github.event.repository.name }}
       GITHUB_ACTOR: ${{ github.actor }}
-      DISABLE_SITEMAP: true
+      DISABLE_SITEMAP: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

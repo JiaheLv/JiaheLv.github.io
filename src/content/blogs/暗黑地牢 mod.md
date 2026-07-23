@@ -6,7 +6,6 @@ heroImage: ""
 tags: ["杂记", "游戏", "Mod"]
 categories: ["杂记"]
 subject: "游戏"
-location: "Tianjin, China"
 ---
 
 ## 英雄中英文名对照

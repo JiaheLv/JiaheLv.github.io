@@ -17,7 +17,7 @@ const blogCollection = defineCollection({
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
     author: z.string().default(siteConfig.author),
-    location: z.string().default('')
+    location: z.string().default('Haikou, China')
   })
 });
 

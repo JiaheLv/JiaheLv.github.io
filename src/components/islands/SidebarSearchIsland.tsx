@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { FormEvent } from 'react';
 
 interface SidebarSearchIslandProps {
@@ -8,12 +8,8 @@ interface SidebarSearchIslandProps {
 // Helper function to get base path in client-side JavaScript
 const getBasePath = () => {
   // In production, read from the global BASE_PATH variable if it exists
-  if (typeof window !== 'undefined') {
-    // @ts-ignore - global variable injected by Astro
-    if (window.BASE_PATH) {
-      // @ts-ignore
-      return window.BASE_PATH;
-    }
+  if (typeof window !== 'undefined' && window.BASE_PATH) {
+    return window.BASE_PATH;
   }
   return import.meta.env.BASE_URL || '';
 };
@@ -35,7 +31,6 @@ const getLink = (path: string) => {
  */
 function SidebarSearchIsland({ placeholder = "Search..." }: SidebarSearchIslandProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const formRef = useRef<HTMLFormElement>(null);
   
   // Handle search submission - Use useCallback to cache function
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
@@ -74,7 +69,6 @@ function SidebarSearchIsland({ placeholder = "Search..." }: SidebarSearchIslandP
   
   return (
     <form 
-      ref={formRef}
       action={getLink('/search')} 
       method="get" 
       className="relative group"

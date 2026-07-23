@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-// Import types only for Fuse.js which will be dynamically loaded at runtime
-import type { FuseResult, IFuseOptions } from 'fuse.js';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { FuseResult } from 'fuse.js';
 
 interface SearchArticle {
   title: string;
@@ -13,93 +12,81 @@ interface SearchArticle {
   subject?: string;
 }
 
-interface SearchResult {
-  item: SearchArticle;
-  refIndex: number;
-  score?: number;
-}
-
-// Define Fuse type for dynamic import
-interface FuseType<T> {
-  search: (query: string) => FuseResult<T>[];
-  new (items: T[], options?: IFuseOptions<T>): FuseType<T>;
-}
+type SearchResult = FuseResult<SearchArticle>;
+type SearchEngine = {
+  search: (query: string) => SearchResult[];
+};
 
 interface SearchIslandProps {
   dataTimestamp: number;
-  popularTags?: string[];
   initialQuery?: string;
   siteTitle?: string;
 }
 
-// Helper function to get base path in client-side JavaScript
 const getBasePath = () => {
-  // In production, read from the global BASE_PATH variable if it exists
-  if (typeof window !== 'undefined') {
-    // @ts-ignore - global variable injected by Astro
-    if (window.BASE_PATH) {
-      // @ts-ignore
-      return window.BASE_PATH;
-    }
+  if (typeof window !== 'undefined' && window.BASE_PATH) {
+    return window.BASE_PATH;
   }
+
   return import.meta.env.BASE_URL || '';
 };
 
-// Helper function to get a URL with the base path
 const getLink = (path: string) => {
   const basePath = getBasePath();
-  // Ensure path starts with a slash
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  // Avoid double slashes when concatenating (e.g., basePath '/' + path '/search' -> '//search')
+
   if (basePath.endsWith('/')) {
     return basePath.slice(0, -1) + normalizedPath;
   }
+
   return `${basePath}${normalizedPath}`;
 };
 
-// Extract search result card component to reduce rendering overhead
-const SearchResultCard = React.memo(({ post, formatDate }: { 
-  post: SearchArticle; 
+const SearchResultCard = React.memo(function SearchResultCard({
+  post,
+  formatDate
+}: {
+  post: SearchArticle;
   formatDate: (dateString: string) => string;
-}) => {
+}) {
   return (
-    <article className="border-2 border-black rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:scale-[1.01] flex flex-col h-full" style={{backgroundColor: 'rgba(255, 228, 196, 0.25)'}}>
+    <article
+      className="border-2 border-black rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:scale-[1.01] flex flex-col h-full"
+      style={{ backgroundColor: 'rgba(255, 228, 196, 0.25)' }}
+    >
       <div className="p-3 flex flex-col flex-grow">
-        {/* Title area */}
         <div className="m-0 p-0">
-            <a href={getLink(`/blogs/${post.slug}`)} className="hover:underline decoration-black">
-              <h2 className="mb-1 text-xl font-bolder text-black">{post.title}</h2>
-            </a>
+          <a href={getLink(`/blogs/${post.slug}`)} className="hover:underline decoration-black">
+            <h2 className="mb-1 text-xl font-bolder text-black">{post.title}</h2>
+          </a>
         </div>
-        {/* Description area */}
         <div className="m-0 p-0 flex-grow">
-          <p className="mb-2 text-slate-600 text-sm line-clamp-3">
-            {post.description}
-          </p>
+          <p className="mb-2 text-slate-600 text-sm line-clamp-3">{post.description}</p>
         </div>
-        
-        {/* Tags area */}
+
         <div className="mb-2">
           <div className="flex flex-wrap gap-1">
-            {post.tags && post.tags.slice(0, 3).map(tag => (
+            {post.tags.slice(0, 3).map((tag) => (
               <a
                 key={tag}
                 href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
                 className="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600"
-                style={{backgroundColor: 'rgba(255, 228, 196, 0.7)'}}
+                style={{ backgroundColor: 'rgba(255, 228, 196, 0.7)' }}
               >
                 {tag}
               </a>
             ))}
-            {post.tags && post.tags.length > 3 && 
-              <span className="text-xs px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full" style={{backgroundColor: 'rgba(255, 228, 196, 0.8)'}}>
+            {post.tags.length > 3 && (
+              <span
+                className="text-xs px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full"
+                style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)' }}
+              >
                 +{post.tags.length - 3}
               </span>
-            }
+            )}
           </div>
         </div>
-        
-        {/* Author and date area */}
+
         <div className="m-0 pt-2 border-t-2 border-black">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 truncate max-w-[50%]">
@@ -115,53 +102,28 @@ const SearchResultCard = React.memo(({ post, formatDate }: {
   );
 });
 
-// Extract tag button component
-const TagButton = React.memo(({ tag, onClick }: { tag: string; onClick: (tag: string) => void }) => {
-  return (
-    <button
-      onClick={() => onClick(tag)}
-      className="text-xs px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
-    >
-      {tag}
-    </button>
-  );
-});
-
-/**
- * Search Island Component - Client-side interactive island
- */
-const SearchIsland = ({ 
-  dataTimestamp, 
-  popularTags = ['JavaScript', 'CSS', 'React', 'Web Development', 'TypeScript'],
+const SearchIsland = ({
+  dataTimestamp,
   initialQuery = '',
   siteTitle = ''
 }: SearchIslandProps) => {
-  // Get initial query from URL to sync with sidebar search
-  const getInitialQuery = useCallback(() => {
-    if (typeof window === 'undefined') return initialQuery;
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('q') || initialQuery;
-  }, [initialQuery]);
-
-  const [searchQuery, setSearchQuery] = useState(getInitialQuery());
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchArticles, setSearchArticles] = useState<SearchArticle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const fuseRef = useRef<any>(null);
+  const fuseRef = useRef<SearchEngine | null>(null);
   const initialQueryRun = useRef(false);
 
-  // Format date - Use useCallback to cache function
   const formatDate = useCallback((dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-us', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     });
   }, []);
 
-  // Perform search - Use useCallback to cache function
   const performSearch = useCallback((query: string, updateUrl = true) => {
     if (!query || !fuseRef.current) {
       setSearchResults([]);
@@ -170,33 +132,30 @@ const SearchIsland = ({
 
     const results = fuseRef.current.search(query);
     setSearchResults(results);
-    
-    // Update URL and page title
+
     if (updateUrl) {
       const url = new URL(window.location.href);
       url.searchParams.set('q', query);
       history.pushState({}, '', url);
     }
+
     document.title = `Search: ${query}${siteTitle ? ` | ${siteTitle}` : ''}`;
   }, [siteTitle]);
 
-  // Reset search - Use useCallback to cache function
   const resetSearch = useCallback(() => {
     setSearchQuery('');
     setSearchResults([]);
-    
-    // Update URL and page title
+
     const url = new URL(window.location.href);
     url.searchParams.delete('q');
     history.pushState({}, '', url);
     document.title = `Search${siteTitle ? ` | ${siteTitle}` : ''}`;
   }, [siteTitle]);
 
-  // Handle search input - Use useCallback to cache function
   const handleSearchInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
+
     const trimmedQuery = query.trim();
     if (trimmedQuery.length >= 2) {
       performSearch(trimmedQuery);
@@ -205,22 +164,13 @@ const SearchIsland = ({
     }
   }, [performSearch, resetSearch]);
 
-  // Handle tag click - Use useCallback to cache function
-  const handleTagClick = useCallback((tag: string) => {
-    setSearchQuery(tag);
-    performSearch(tag);
-  }, [performSearch]);
-
-  // Listen for URL changes
   useEffect(() => {
     const handlePopState = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const queryFromUrl = urlParams.get('q') || '';
+      const queryFromUrl = new URLSearchParams(window.location.search).get('q') || '';
       setSearchQuery(queryFromUrl);
-      
+
       if (fuseRef.current && queryFromUrl) {
-        const results = fuseRef.current.search(queryFromUrl);
-        setSearchResults(results);
+        setSearchResults(fuseRef.current.search(queryFromUrl));
       } else {
         setSearchResults([]);
       }
@@ -232,29 +182,35 @@ const SearchIsland = ({
     };
   }, []);
 
-  // Fetch search data
   useEffect(() => {
     let isMounted = true;
-    
+
     const initializeSearch = async () => {
-      if (isInitialized) return; // Avoid repeated initialization
+      if (isInitialized) {
+        return;
+      }
+
       setIsLoading(true);
-      
+
       try {
-        // 1. Load search data
         const response = await fetch(getLink(`/api/search.json?v=${dataTimestamp}`));
         if (!response.ok) {
           throw new Error('Failed to fetch search data');
         }
-        const data = await response.json();
-        if (!isMounted) return;
+
+        const data = await response.json() as SearchArticle[];
+        if (!isMounted) {
+          return;
+        }
+
         setSearchArticles(data);
-        
-        // 2. Dynamically import Fuse.js
+
         const fuseModule = await import('fuse.js');
+        if (!isMounted) {
+          return;
+        }
+
         const Fuse = fuseModule.default;
-        
-        // 3. Initialize Fuse instance
         fuseRef.current = new Fuse(data, {
           keys: [
             { name: 'title', weight: 2 },
@@ -271,8 +227,7 @@ const SearchIsland = ({
           findAllMatches: true,
           minMatchCharLength: 2
         });
-        
-        if (!isMounted) return;
+
         setIsInitialized(true);
       } catch (error) {
         console.error('Error initializing search:', error);
@@ -283,42 +238,33 @@ const SearchIsland = ({
       }
     };
 
-    initializeSearch();
-    
-    // Cleanup function
+    void initializeSearch();
+
     return () => {
       isMounted = false;
     };
-  }, [dataTimestamp]);
+  }, [dataTimestamp, isInitialized]);
 
-  // Initial query execution
   useEffect(() => {
-    // Ensure it only runs once after initialization
-    if (isInitialized && !initialQueryRun.current) {
-      const currentQuery = getInitialQuery();
-      if (currentQuery) {
-        performSearch(currentQuery, false);
-      }
-      initialQueryRun.current = true;
+    if (!isInitialized || initialQueryRun.current) {
+      return;
     }
-  }, [isInitialized, getInitialQuery, performSearch]);
 
-  // Cache tag buttons with useMemo
-  const tagButtons = useMemo(() => (
-    <div className="mt-3 flex flex-wrap gap-2">
-      {popularTags.map(tag => (
-        <TagButton key={tag} tag={tag} onClick={handleTagClick} />
-      ))}
-    </div>
-  ), [popularTags, handleTagClick]);
+    if (initialQuery) {
+      performSearch(initialQuery, false);
+    }
 
-  // Cache search results list with useMemo
+    initialQueryRun.current = true;
+  }, [initialQuery, isInitialized, performSearch]);
+
   const searchResultsList = useMemo(() => {
-    if (!searchQuery || searchResults.length === 0) return null;
-    
+    if (!searchQuery || searchResults.length === 0) {
+      return null;
+    }
+
     return (
       <div className="grid gap-6 md:grid-cols-2">
-        {searchResults.map(result => (
+        {searchResults.map((result) => (
           <SearchResultCard
             key={result.item.slug}
             post={result.item}
@@ -327,17 +273,18 @@ const SearchIsland = ({
         ))}
       </div>
     );
-  }, [searchQuery, searchResults, formatDate]);
+  }, [formatDate, searchQuery, searchResults]);
 
-  // Cache all articles list with useMemo
   const allArticlesList = useMemo(() => {
-    if (searchQuery || isLoading || searchArticles.length === 0) return null;
-    
+    if (searchQuery || isLoading || searchArticles.length === 0) {
+      return null;
+    }
+
     return (
       <>
         <h2 className="text-2xl font-bold mb-6">All Articles</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          {searchArticles.map(post => (
+          {searchArticles.map((post) => (
             <SearchResultCard
               key={post.slug}
               post={post}
@@ -347,54 +294,56 @@ const SearchIsland = ({
         </div>
       </>
     );
-  }, [searchQuery, isLoading, searchArticles, formatDate]);
+  }, [formatDate, isLoading, searchArticles, searchQuery]);
 
   return (
     <div className="mx-auto">
-      {/* Search box */}
       <div className="mb-2">
         <div className="relative">
-          <input 
-            type="text" 
-            id="search-input" 
-            placeholder="Search articles, tags or categories..." 
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search articles, tags or categories..."
             className="w-full p-2 pr-12 text-2xl border-2 border-black rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:ring-0 focus:outline-none focus:border-2 focus:border-black focus:scale-[1.01]"
-            style={{backgroundColor: 'rgba(255, 228, 196, 0.4)'}}
+            style={{ backgroundColor: 'rgba(255, 228, 196, 0.4)' }}
             value={searchQuery}
             onChange={handleSearchInput}
           />
           <div className="absolute right-4 top-4 text-slate-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </div>
         </div>
-        
-        {/* Popular tags */}
-        {/* {tagButtons} */}
       </div>
-      
-      {/* Search status */}
+
       {searchQuery && (
         <div className="text-center m-0 p-0">
           <p className="text-slate-600">
-            {/* <span>{searchResults.length}</span> results matching "<span>{searchQuery}</span>" */}
-            共有 <span>{searchResults.length}</span> 个结果匹配 "<span>{searchQuery}</span>"
+            鍏辨湁 <span>{searchResults.length}</span> 涓粨鏋滃尮閰?"<span>{searchQuery}</span>"
           </p>
         </div>
       )}
-      
-      {/* Loading state */}
+
       {isLoading && (
         <div className="text-center py-8">
           <p className="text-slate-600">Loading...</p>
         </div>
       )}
-      
-      {/* Search results */}
+
       {searchResultsList}
-      
-      {/* No results state */}
+
       {searchQuery && searchResults.length === 0 && !isLoading && isInitialized && (
         <div className="text-center py-12">
           <p className="text-xl text-slate-600">No matching articles found.</p>
@@ -406,11 +355,10 @@ const SearchIsland = ({
           </p>
         </div>
       )}
-      
-      {/* Initial state: show all articles */}
+
       {allArticlesList}
     </div>
   );
 };
 
-export default React.memo(SearchIsland); 
+export default React.memo(SearchIsland);

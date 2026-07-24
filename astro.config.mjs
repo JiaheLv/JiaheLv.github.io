@@ -15,6 +15,14 @@ console.log('Astro Config - Base:', siteConfig.base);
 
 // https://astro.build/config
 export default defineConfig({
+  vite: {
+    assetsInclude: ['**/*.base', '**/.obsidian/**', '**/_bases/**'],
+    server: {
+      watch: {
+        ignored: ['**/.obsidian/**', '**/_bases/**', '**/bases/**', '**/_home/**', '**/home/**', '**/_base/**', '**/base/**']
+      }
+    }
+  },
   site: siteConfig.url, // 使用从 config 文件获取的 URL
   base: siteConfig.base, // <-- 使用从 config 文件获取的 base
   integrations: [

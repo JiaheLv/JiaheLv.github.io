@@ -3,6 +3,8 @@ import { SEO } from 'astro-seo';
 import '../styles/global.css';
 import { getSiteConfig, getSeoConfig } from '@utils/config';
 import { getLink } from '@utils/paths';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import UptoTop from '@components/UptoTop.astro';
 import logoSvg from '../assets/icons/Jiahe-Lv-s-Archive.svg?raw';
 
 export interface Props {
@@ -98,7 +100,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
         <Fragment set:html={logoSvg} />
       </a>
     </div>
+    <Breadcrumb currentTitle={title} />
     <!-- <hr class="site_hr"> -->
     <slot />
+    <UptoTop />
   </body>
 </html>

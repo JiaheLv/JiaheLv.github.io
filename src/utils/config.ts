@@ -43,6 +43,8 @@ export interface SiteConfig {
     readingTime: boolean;
     search: boolean;
     comments: boolean;
+    scrollToTop: boolean;
+    breadcrumb: boolean;
   };
   navigation?: {
     header: NavItem[];

@@ -1,0 +1,12 @@
+---
+import { isFeatureEnabled } from '@utils/config';
+import BackToTopIsland from '@components/islands/BackToTopIsland';
+
+const isUptoTopEnabled = isFeatureEnabled('scrollToTop');
+---
+
+{
+  isUptoTopEnabled && (
+    <BackToTopIsland client:load />
+  )
+}

@@ -46,6 +46,8 @@
     "tableOfContents": true,
     "readingTime": true,
     "search": true,
-    "comments": true
+    "comments": true,
+    "scrollToTop": true,
+    "breadcrumb": true
   }
 } 

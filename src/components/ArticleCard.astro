@@ -3,18 +3,16 @@ import type { ArticleCardProps as Props } from '@types/astro';
 import { Image } from 'astro:assets';
 import { getLink } from '@utils/paths';
 
-const { title, description, pubDate, updatedDate, heroImage, tags, author, slug } = Astro.props;
+const { title, description, pubDate, heroImage, tags, author, slug } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString('en-us', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
 });
-
-const hasUpdated = updatedDate && updatedDate > pubDate;
 ---
 
-<article class="border-2 border-black rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full" style={{backgroundColor:'rgba(255, 227, 196, 0.25)'}}>
+<article class="flex h-full flex-col overflow-hidden rounded-lg border-2 border-black bg-[rgba(255,227,196,0.25)] shadow-sm transition-shadow hover:shadow-md">
   {heroImage && (
     <a href={getLink(`/blogs/${slug}`)} class="block">
       {typeof heroImage === 'string' ? (
@@ -46,7 +44,7 @@ const hasUpdated = updatedDate && updatedDate > pubDate;
     <!-- Title area -->
     <div class="m-0 p-0">
       <a href={getLink(`/blogs/${slug}`)} class="hover:underline decoration-black">
-        <h2 class="mb-1 text-xl font-bolder text-black">{title}</h2>
+        <h2 class="mb-1 text-xl font-bold text-black">{title}</h2>
       </a>
     </div>
     
@@ -63,14 +61,13 @@ const hasUpdated = updatedDate && updatedDate > pubDate;
         {tags && tags.length > 0 && tags.slice(0, 3).map(tag => (
           <a
             href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-            class="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600"
-            style={{backgroundColor: 'rgba(255, 228, 196, 0.7)'}}
+            class="rounded-full bg-[rgba(255,228,196,0.7)] px-2 py-0.5 text-xs text-slate-600"
           >
             {tag}
           </a>
         ))}
         {tags && tags.length > 3 && 
-          <span class="text-xs px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full" style={{backgroundColor: 'rgba(255, 228, 196, 0.8)'}}>
+          <span class="rounded-full bg-[rgba(255,228,196,0.8)] px-2 py-0.5 text-xs text-slate-500">
             +{tags.length - 3}
           </span>
         }

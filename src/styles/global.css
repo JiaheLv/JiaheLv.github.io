@@ -16,21 +16,21 @@
     min-height: 100%;
   }
   
-  /* 伪元素实现固定背景，避免触控板滚动时出现空白 */
+  /* Keep the background fixed during touchpad scrolling. */
   html::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: -1;
 
-    background-image: url(../assets/img/background.jpg);
+    background-image: url('/images/background.jpg');
     background-image: -webkit-image-set(
-        url(../assets/img/background.jpg) type('image/jpeg'),
-        url(../assets/img/background.webp) type('image/webp')
+        '/images/background.jpg' type('image/jpeg'),
+        '/images/background.webp' type('image/webp')
     );
     background-image: image-set(
-        url(../assets/img/background.jpg) type('image/jpeg'),
-        url(../assets/img/background.webp) type('image/webp')
+        '/images/background.jpg' type('image/jpeg'),
+        '/images/background.webp' type('image/webp')
     );
 
     background-repeat: no-repeat;
@@ -41,35 +41,6 @@
     background-position: center center;
   }
 
-  body {
-    @apply font-sans antialiased text-slate-900 bg-white;
-    margin: 1%;
-    padding: 0 1%;
-    box-sizing: border-box;
-  }
-
-  .site_logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 38%;
-    margin: 0.5% auto 0;
-  }
-
-  .site_logo svg {
-    width: 100%;
-    height: auto;
-  }
-
-  .site_hr {
-    
-    margin: 0;
-    background-color: black;
-    opacity: 1;
-    height: 5px;
-    border: none;
-  }
-  
   /* Giscus styles */
   .giscus {
     width: 100%;
@@ -79,20 +50,6 @@
   .giscus-frame {
     width: 100%;
     border: none;
-  }
-
-  /* Navigation styles */
-  .nav-link {
-    @apply flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 transition-colors;
-  }
-
-  .nav-link.active {
-    @apply bg-slate-100 text-indigo-600;
-  }
-
-  /* Card styles */
-  .card {
-    @apply bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow;
   }
 
   /* Typography */
@@ -110,24 +67,6 @@
   /* Links */
   a {
     @apply text-indigo-600 hover:text-indigo-700 transition-colors;
-  }
-
-  /* Tags */
-  .tag {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm bg-slate-100 hover:bg-slate-200 transition-colors;
-  }
-
-  /* Buttons */
-  .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-colors;
-  }
-
-  .btn-primary {
-    @apply bg-indigo-600 hover:bg-indigo-700 text-white;
-  }
-
-  .btn-secondary {
-    @apply bg-slate-100 hover:bg-slate-200 text-slate-900;
   }
 
   /* Form elements */
@@ -168,12 +107,4 @@
     @apply rounded-lg mx-auto my-6;
   }
 
-  /* Layout utilities */
-  .container-narrow {
-    @apply max-w-2xl mx-auto px-4;
-  }
-
-  .container-wide {
-    @apply max-w-7xl mx-auto px-4;
-  }
 }

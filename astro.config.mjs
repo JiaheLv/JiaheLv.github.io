@@ -6,12 +6,10 @@ import sitemap from '@astrojs/sitemap';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkToc from 'remark-toc';
-import { getSiteConfig } from './src/utils/config'; // 确保路径正确
+import { getSiteConfig } from './src/utils/config';
 import icon from 'astro-icon';
 
 const siteConfig = getSiteConfig();
-console.log('Astro Config - URL:', siteConfig.url);
-console.log('Astro Config - Base:', siteConfig.base);
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,8 +21,8 @@ export default defineConfig({
       }
     }
   },
-  site: siteConfig.url, // 使用从 config 文件获取的 URL
-  base: siteConfig.base, // <-- 使用从 config 文件获取的 base
+  site: siteConfig.url,
+  base: siteConfig.base,
   integrations: [
     tailwind(),
     mdx({
@@ -43,8 +41,8 @@ export default defineConfig({
     // Include sitemap only when not explicitly disabled by DISABLE_SITEMAP
     // Some versions of @astrojs/sitemap expect 'routes' from the build which can be undefined
     // in certain CI environments; disable sitemap generation in CI by setting DISABLE_SITEMAP=true.
-    ...(process.env.DISABLE_SITEMAP === 'true' ? [] : [sitemap()]), // sitemap 会自动使用 site 和 base
-    icon() // 添加 icon 集成
+    ...(process.env.DISABLE_SITEMAP === 'true' ? [] : [sitemap()]),
+    icon()
   ],
   markdown: {
     syntaxHighlight: 'shiki',
@@ -53,7 +51,7 @@ export default defineConfig({
       wrap: true
     }
   },
-  output: 'static', // 保持 'static'，因为 GitHub Pages 和 Cloudflare Pages 都托管静态文件
+  output: 'static',
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',

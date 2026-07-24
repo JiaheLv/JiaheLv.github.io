@@ -16,6 +16,7 @@ export interface Props {
   updatedDate?: Date;
   tags?: string[];
   category?: string;
+  bodyClass?: string;
 }
 
 // Get site configuration
@@ -30,10 +31,12 @@ const {
   pubDate,
   updatedDate,
   tags,
-  category
+  category,
+  bodyClass = 'min-h-screen m-[1%] box-border bg-white px-[1%] py-0 font-sans text-slate-900 antialiased'
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+const logoMarkup = logoSvg.replace('<svg', '<svg class="h-auto w-full"');
 ---
 
 <!doctype html>
@@ -42,7 +45,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href={getLink("/favicon.svg")} />
-    <!-- 传统浏览器 fallback -->
+    <!-- Fallback for browsers that do not use SVG favicons. -->
     <link rel="icon" type="image/x-icon" href={getLink("/favicon.ico")} sizes="48x48" />
     <link rel="apple-touch-icon" href={getLink("/favicon.svg")} />
     <meta name="generator" content={Astro.generator} />
@@ -94,14 +97,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
 
     <slot name="head" />
   </head>
-  <body class="min-h-screen bg-white text-slate-900">
-    <div class="site_logo">
-      <a href="/" title="首页">
-        <Fragment set:html={logoSvg} />
+  <body class={bodyClass}>
+    <div class="mx-auto mt-[0.5%] flex w-[38%] items-center justify-center">
+      <a href={getLink('/')} title="首页" class="block w-full text-black hover:text-black">
+        <Fragment set:html={logoMarkup} />
       </a>
     </div>
     <Breadcrumb currentTitle={title} />
-    <!-- <hr class="site_hr"> -->
     <slot />
     <UptoTop />
   </body>

@@ -22,12 +22,15 @@ const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 
 {toc.length > 0 && (
-  <nav class="border border-slate-200">
-    <h2>Table of Contents</h2>
-    <ul>
+  <nav class="toc m-0 flex max-h-[inherit] flex-col rounded-[0.6em] border border-slate-200 bg-[rgba(255,228,196,0.4)] px-[15px] py-[10px]">
+    <h2 class="m-0 border-b-2 border-black p-0 text-[1.4em]">Table of Contents</h2>
+    <ul class="mt-[5px] min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {toc.map(heading => (
         <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
-          <a href={`#${heading.slug}`}>
+          <a
+            href={`#${heading.slug}`}
+            class="rounded-[0.3em] px-[3px] py-[2px] font-normal text-[#333] hover:bg-[rgba(255,228,196,0.7)] hover:font-semibold hover:text-black hover:underline"
+          >
             {heading.text}
           </a>
         </li>
@@ -67,42 +70,3 @@ const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
     });
   });
 </script>
-
-<style>
-  nav {
-    margin: 0;
-    padding: 10px 15px;
-    background-color: rgba(255, 228, 196, 0.4);
-    border-radius: 0.6em;
-    display: flex;
-    flex-direction: column;
-    max-height: inherit;
-  }
-  h2 {
-    margin: 0; padding: 0;
-    font-size: 1.4em;
-    border-bottom: 2px solid black;
-  }
-  ul {
-    margin-top: 5px;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
-  ul::-webkit-scrollbar {
-    display: none;
-  }
-  a {
-    padding: 2px 3px;
-    color: #333;
-    font-weight: 400;
-  }
-  a:hover {
-    color: #000;
-    font-weight: 600;
-    text-decoration: underline;
-    background-color: rgba(255, 228, 196, 0.7);
-    border-radius: 0.3em;
-  }
-</style>

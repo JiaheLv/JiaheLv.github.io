@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import ThreeColumnLayout from '@layouts/ThreeColumnLayout.astro';
+import BIPL from '@layouts/OtherPageLayout.astro';
 import ArticleListItem from '@components/ArticleListItem.astro';
 import { formatPageTitle, getSiteConfig } from '@utils/config';
 import { getLink } from '@utils/paths';
 
 // Get all blog posts
-const allPosts = await getCollection('blog', ({ data }) => {
+const allPosts = await getCollection('blogs', ({ data }) => {
   return import.meta.env.PROD ? !data.draft : true;
 });
 
@@ -44,7 +44,7 @@ const paginatedPosts = sortedPosts.slice(
 const siteConfig = getSiteConfig();
 ---
 
-<ThreeColumnLayout title={formatPageTitle('Blog')}>
+<BIPL title={formatPageTitle('Blog')}>
   <header class="pb-8 border-b border-slate-200 mb-8">
     <h1 class="text-4xl font-bold mb-4">Blog</h1>
     <p class="text-lg text-slate-600">
@@ -98,7 +98,7 @@ const siteConfig = getSiteConfig();
       <nav class="inline-flex rounded shadow-sm" aria-label="Pagination">
         {currentPage > 1 && (
           <a
-            href={getLink(`/blog${currentPage > 2 ? '/' + (currentPage - 1) : ''}`)}
+            href={getLink(`/blogs${currentPage > 2 ? '/' + (currentPage - 1) : ''}`)}
             class="px-3 py-2 rounded-l-md border border-r-0 border-slate-300 bg-white text-slate-500 hover:bg-slate-50"
           >
             Previous
@@ -106,7 +106,7 @@ const siteConfig = getSiteConfig();
         )}
         {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
           <a
-            href={getLink(`/blog${page > 1 ? '/' + page : ''}`)}
+            href={getLink(`/blogs${page > 1 ? '/' + page : ''}`)}
             class:list={[
               'px-3 py-2 border border-slate-300',
               page === currentPage
@@ -128,4 +128,4 @@ const siteConfig = getSiteConfig();
       </nav>
     </div>
   )}
-</ThreeColumnLayout>
+</BIPL>

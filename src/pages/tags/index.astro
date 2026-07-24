@@ -1,5 +1,5 @@
 ---
-import TPL from '@layouts/CategorySearchTagsPageLayout.astro';
+import TPL from '@layouts/OtherPageLayout.astro';
 import { getCollection } from 'astro:content';
 import { getLink } from '@utils/paths';
 import { getSiteConfig} from '@utils/config';
@@ -108,12 +108,10 @@ const sortedLetters = Object.keys(tagsByLetter).sort();
       {sortedTags.map(({ tag, count }) => (
         <a
           href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-          class="text-sm px-4 py-2 text-black rounded-full flex items-center hover:text-black hover:underline decoration-black"
-          style="background-color: rgba(255, 228, 196, 0.7)"
+          class="flex items-center rounded-full bg-[rgba(255,228,196,0.7)] px-4 py-2 text-sm text-black decoration-black hover:text-black hover:underline"
         >
           <span>{tag}</span>
-          <span class="ml-2 text-black rounded-full px-2 py-0.5 text-xs"
-          style="background-color: rgba(255, 228, 196, 1.0)">
+          <span class="ml-2 rounded-full bg-[rgba(255,228,196,1)] px-2 py-0.5 text-xs text-black">
             {count}
           </span>
         </a>

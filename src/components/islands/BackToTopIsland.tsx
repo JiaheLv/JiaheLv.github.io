@@ -45,55 +45,9 @@ function BackToTopIsland() {
 
   return (
     <>
-      <style>{`
-        .back-to-top-btn {
-          position: fixed;
-          right: 25px;
-          bottom: 25px;
-          z-index: 1000;
-          width: 45px;
-          height: 45px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-sizing: border-box;
-          padding: 0;
-          color: black;
-          background-color: rgba(255, 199, 110, 0.2);
-          border: 2px solid black;
-          border-radius: 999px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-          transform: translateY(8px);
-          transition:
-            opacity 200ms ease,
-            visibility 200ms ease,
-            transform 200ms ease,
-            background-color 200ms ease;
-        }
-        .back-to-top-btn[data-visible="true"] {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: auto;
-          transform: translateY(0);
-        }
-        .back-to-top-btn:hover,
-        .back-to-top-btn:focus-visible {
-          background-color: rgba(255, 199, 110, 0.35);
-          outline: none;
-          transform: translateY(-2px);
-        }
-        .back-to-top-btn svg {
-          width: 24px;
-          height: 24px;
-        }
-      `}</style>
       <button
         type="button"
-        className="back-to-top-btn"
+        className="invisible pointer-events-none fixed bottom-[25px] right-[25px] z-[1000] box-border flex h-[45px] w-[45px] translate-y-2 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-[rgba(255,199,110,0.2)] p-0 text-black opacity-0 shadow-[0_4px_15px_rgba(0,0,0,0.2)] transition-[opacity,visibility,transform,background-color] duration-200 ease-in-out data-[visible=true]:visible data-[visible=true]:pointer-events-auto data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100 hover:-translate-y-[2px] hover:bg-[rgba(255,199,110,0.35)] focus-visible:-translate-y-[2px] focus-visible:bg-[rgba(255,199,110,0.35)] focus-visible:outline-none"
         data-visible={isVisible}
         aria-label="回到顶部"
         title="回到顶部"
@@ -102,6 +56,7 @@ function BackToTopIsland() {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
+          className="h-6 w-6"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"

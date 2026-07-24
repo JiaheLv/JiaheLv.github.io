@@ -12,40 +12,20 @@ export interface Props {
   slug: string;
 }
 
-const { title, pubDate, updatedDate, slug } = Astro.props;
-
-
-const hasUpdated = updatedDate && updatedDate > pubDate;
-
-var formattedDateStr = `创建于 ${new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: '2-digit',
-  formatter: 'short'
-}).format(pubDate)}`;
-
-// Change date format to single line compact format
-if (hasUpdated) {
-  formattedDateStr = `更新于 ${new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    formatter: 'short'
-  }).format(updatedDate)}`;
-}
+const { title, slug } = Astro.props;
 ---
 
 <article>
   <!-- Content column -->
-  <a href={getLink(`/blogs/${slug}`)} class="article_link" title={title}>
+  <a
+    href={getLink(`/blogs/${slug}`)}
+    class="mb-[10px] mx-[3px] block rounded-lg border-2 border-solid border-[rgba(0,0,0,0.2)] p-[5px] text-black no-underline hover:scale-[1.01] hover:bg-[rgba(255,255,255,0.3)] hover:text-black"
+    title={title}
+  >
     <!-- Title -->
-    <h3 class="article_title">
+    <h3 class="m-0 overflow-hidden text-ellipsis whitespace-nowrap p-0 text-[1.3rem] font-[550]">
       {title}
     </h3>
-    <!-- Date -->
-    <!-- <div class="article_date">
-      {formattedDateStr}
-    </div> -->
       <!-- Tags -->
       <!-- {tags && tags.length > 0 && (
         <div class="flex flex-wrap gap-1.5 mb-3">
@@ -80,34 +60,3 @@ if (hasUpdated) {
       </div> -->
   </a>
 </article>
-
-<style>
-  .article_link {
-    display: block;
-    border-radius: 8px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    margin: 0 3px 10px;
-    padding: 5px;
-    text-decoration: none;
-    color: black;
-  }
-  .article_link:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.01);
-  }
-  .article_title {
-    font-size: 1.3rem;
-    font-weight: 550;
-    margin: 0;
-    padding: 0;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .article_title a {
-    color: black;
-    text-decoration: none;
-  }
-</style>

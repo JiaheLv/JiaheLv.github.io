@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import CategoryPageLayout from '@layouts/CategorySearchTagsPageLayout.astro';
+import CategoryPageLayout from '@layouts/OtherPageLayout.astro';
 import { getLink } from '@utils/paths';
 
 export async function getStaticPaths() {
@@ -60,12 +60,14 @@ const sortedSubjects = Object.entries(postsBySubject)
     name,
     posts: posts.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh'))
   }));
+
+const postLinkClass = 'mx-[5px] mb-[5px] block overflow-hidden text-ellipsis whitespace-nowrap rounded-md border-2 border-solid border-[rgba(0,0,0,0.2)] px-[15px] py-[10px] text-black no-underline backdrop-blur-[5px] transition-all duration-300 ease-in-out hover:scale-[1.02] hover:bg-[rgba(255,255,255,0.3)] hover:text-black';
 ---
 
 <CategoryPageLayout title={`${displayCategory} 列表`}>
-  <header>
-    <h1 class="category_name">{displayCategory}</h1>
-    <p class="category_desc">
+  <header class="flex flex-row items-end justify-between border-b-4 border-black p-[10px]">
+    <h1 class="m-0 p-0 text-[2.5rem] font-bold">{displayCategory}</h1>
+    <p class="m-0 p-0 text-[1.1rem] font-medium text-[#555]">
       <!-- Showing {sortedPosts.length} post{sortedPosts.length !== 1 ? 's' : ''} in the "{displayCategory}" category -->
       "{displayCategory}" 类目中，共有 {sortedPosts.length} 篇笔记
     </p>
@@ -84,20 +86,20 @@ const sortedSubjects = Object.entries(postsBySubject)
       <p class="text-xl text-slate-600">No posts found in this category.</p>
     </div>
   ) : (
-    <div class="subjects">
+    <div class="mx-[10px] mt-[10px] grid grid-cols-2 gap-[30px] p-0">
       {sortedSubjects.map(({ name, posts }) => (
-        <div class="subject">
-          <h2 class="subject_name">{name}</h2>
-          <ul class="post_list">
+        <div class="m-0 p-0">
+          <h2 class="mb-[10px] mt-0 border-b-2 border-black p-0 text-2xl">{name}</h2>
+          <ul>
             {posts.map(post => (
-                <a href={getLink(`/blogs/${post.slug}`)} title={post.data.title} class="post_title" >
-                  <li class="post_item">
-                    <span class="post_date">
+                <li>
+                  <a href={getLink(`/blogs/${post.slug}`)} title={post.data.title} class={postLinkClass}>
+                    <span class="text-[rgba(0,0,0,0.7)]">
                       [{post.data.pubDate.toISOString().slice(0, 7).replace('-', '/')}]
                     </span>
                     {post.data.title}
-                  </li>
-                </a>
+                  </a>
+                </li>
             ))}
           </ul>
         </div>
@@ -105,68 +107,3 @@ const sortedSubjects = Object.entries(postsBySubject)
     </div>
   )}
 </CategoryPageLayout>
-
-<style>
-  header {
-    border-bottom: 4px solid black;
-    display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: space-between;
-    padding: 10px;
-  }
-  .category_name {
-    margin: 0; padding: 0;
-    font-size: 2.5rem;
-    font-weight: bold;
-  }
-  .category_desc {
-    margin: 0; padding: 0;
-    color: rgb(85, 85, 85);
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  .subjects {
-    margin: 10px 10px 0;
-    padding: 0;
-
-    /* border-radius: 10px;
-    border-color: black;
-    border-style: solid;
-    border-width: 3px; */
-
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-  }
-  .subject {
-    margin: 0; padding: 0;
-  }
-  .subject_name {
-    margin: 0 0 10px; padding: 0;
-    font-size: 1.5rem;
-    border-bottom: 2px solid black;
-  }
-  .post_item{
-    margin: 0 5px 5px;
-
-    display: block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: black;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    backdrop-filter: blur(5px);
-    border: 2px solid rgba(0, 0, 0, 0.2);
-  }
-  .post_item:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.02);
-  }
-  .post_date {
-    color: rgba(0, 0, 0, 0.7);
-  }
-</style>

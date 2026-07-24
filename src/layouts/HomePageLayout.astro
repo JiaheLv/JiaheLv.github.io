@@ -12,208 +12,50 @@ export interface Props {
 const { title, description, image, article } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} article={article}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  article={article}
+  bodyClass="m-0 flex h-[100dvh] flex-col overflow-hidden bg-white p-0 font-sans text-slate-900 antialiased"
+>
   <!-- Main Content -->
-  <div class="main_content">
+  <div class="mx-auto mt-[10px] grid h-auto min-h-0 w-[94%] flex-1 grid-cols-[2.2fr_7.8fr] grid-rows-[5.8fr_4.2fr] gap-[10px] p-0">
     <!-- <header class="pb-8 border-b border-slate-200 mb-8">
       <slot name="hero" />
     </header> -->
 
     <!-- 笔记 -->
-    <section class="content_div cd_1">
+    <section class="col-start-1 row-span-2 row-start-1 flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
       <slot name="notes" />
     </section>
-    <div class="cd_23">
+    <div class="grid grid-cols-[1.5fr_1fr]">
       <!-- 项目 -->
-      <section class="content_div cd_2">
+      <section class="col-start-1 row-start-1 mr-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
         <slot name="projects" />
       </section>
 
       <!-- 札记 -->
-      <section class="content_div cd_3">
+      <section class="col-start-2 row-start-1 ml-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
         <slot name="essays" />
       </section>
     </div>
-    <div class="cd_45">
+    <div class="grid grid-cols-2">
       <!-- 杂记 -->
-      <section class="content_div cd_4">
+      <section class="col-start-1 row-start-1 mr-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
         <slot name="misc" />
       </section>
 
       <!-- 随笔 -->
-      <section class="content_div cd_5">
+      <section class="col-start-2 row-start-1 ml-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
         <slot name="casual" />
       </section>
     </div>
   </div>
-  <div class="external_link">
-    <a href="https://github.com/JiaheLv/JiaheLv.github.io" class="my_github_link" title="Github Link" target="_blank">
+  <div class="relative mx-auto mb-[5px] mt-[10px] flex h-max w-max items-center gap-[5px] p-0">
+    <a href="https://github.com/JiaheLv/JiaheLv.github.io" class="flex items-center text-black no-underline hover:scale-[1.05] hover:text-black" title="Github Link" target="_blank">
       <Icon name="github" class="github_icon" size={29} />
     </a>
-    <button class="about_me_button" title="About me">About me</button>
+    <button class="m-0 flex h-[26px] items-center justify-center rounded-[1em] border-[3px] border-solid border-black bg-[rgba(255,255,255,0.1)] px-[5px] py-0 text-base font-bold hover:scale-[1.05] hover:bg-[rgba(255,255,255,0.2)] hover:shadow-[0_0_5px_rgba(0,0,0,0.5)]" title="About me"><a href="/about" class="no-underline text-black hover:text-black">About me</a></button>
   </div>
 </BaseLayout>
-
-<style>
-  :global(body) {
-    height: 100dvh;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .main_content{  
-    margin: 10px auto 0;
-    padding: 0;
-    width: 94%;
-
-    flex: 1;
-    min-height: 0;
-    height: auto;
-
-    display: grid;
-    grid-template-columns: 2.2fr 7.8fr;
-    grid-template-rows: 5.8fr 4.2fr;
-    gap: 10px;
-  }
-
-  .content_div{
-      padding: 10px;
-
-      border-radius: 10px;
-      border-color: black;
-      border-style: solid;
-      border-width: 3px;
-
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-  }
-
-  
-  .content_div:hover{
-      transform: scale(1.01);
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);
-      background-color: rgba(255, 191, 112, 0.3);
-      ;
-  }
-
-  /* .content_div a{
-      color: black;
-      text-decoration: none;
-  } */
-
-  .cd_1{
-      grid-column: 1;
-      grid-row: 1 / span 2;
-  }
-  .cd_23{
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-  }
-  .cd_2{
-      grid-column: 1;
-      grid-row: 1;
-      margin-right: 5px;
-  }
-  .cd_3{
-      grid-column: 2;
-      grid-row: 1;
-      margin-left: 5px;
-  }
-  .cd_45{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-  }
-  .cd_4{
-      grid-column: 1;
-      grid-row: 1;
-      margin-right: 5px;
-  }
-  .cd_5{
-      grid-column: 2;
-      grid-row: 1;
-      margin-left: 5px;
-  }
-
-  .external_link{
-    position: relative;
-    margin: 10px auto 5px;
-    padding: 0;
-
-    height: max-content;
-    width: max-content;
-
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .my_github_link{
-    display: flex;
-    /* background-color: rgba(186, 113, 24, 0.7); */
-    /* height: 33px;
-    width: 33px; */
-
-    /* border-radius: 100%;
-    border-color: black;
-    border-style: solid;
-    border-width: 3px; */
-
-    align-items: center;
-    text-decoration: none;
-    color: black;
-  }
-  .my_github_link:hover{
-    transform: scale(1.05);
-  }
-
-  /* .github_icon {
-    margin: 0;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-  } */
-
-  /* .github_icon svg{
-    width: 22px;
-    height: 22px;
-    fill: currentColor;
-  } */
-
-  /* .github_icon:hover{
-    transform: scale(1.05);
-  } */
-
-  .about_me_button{
-    margin: 0;
-    padding: 0 5px;
-
-    height: 26px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    background-color: rgba(255, 255, 255, 0.1);
-
-    border-radius: 1em;
-    border-color: black;
-    border-style: solid;
-    border-width: 3px;
-
-    font-size: medium;
-    font-weight: bold;
-  }
-  .about_me_button:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-  }
-</style>

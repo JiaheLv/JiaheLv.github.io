@@ -51,13 +51,12 @@ const SearchResultCard = React.memo(function SearchResultCard({
 }) {
   return (
     <article
-      className="border-2 border-black rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:scale-[1.01] flex flex-col h-full"
-      style={{ backgroundColor: 'rgba(255, 228, 196, 0.25)' }}
+      className="flex h-full flex-col overflow-hidden rounded-lg border-2 border-black bg-[rgba(255,228,196,0.25)] shadow-sm transition-all hover:scale-[1.01] hover:shadow-md"
     >
       <div className="p-3 flex flex-col flex-grow">
         <div className="m-0 p-0">
           <a href={getLink(`/blogs/${post.slug}`)} className="hover:underline decoration-black">
-            <h2 className="mb-1 text-xl font-bolder text-black">{post.title}</h2>
+            <h2 className="mb-1 text-xl font-bold text-black">{post.title}</h2>
           </a>
         </div>
         <div className="m-0 p-0 flex-grow">
@@ -70,16 +69,14 @@ const SearchResultCard = React.memo(function SearchResultCard({
               <a
                 key={tag}
                 href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-                className="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600"
-                style={{ backgroundColor: 'rgba(255, 228, 196, 0.7)' }}
+                className="rounded-full bg-[rgba(255,228,196,0.7)] px-2 py-0.5 text-xs text-slate-600"
               >
                 {tag}
               </a>
             ))}
             {post.tags.length > 3 && (
               <span
-                className="text-xs px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full"
-                style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)' }}
+                className="rounded-full bg-[rgba(255,228,196,0.8)] px-2 py-0.5 text-xs text-slate-500"
               >
                 +{post.tags.length - 3}
               </span>
@@ -304,8 +301,7 @@ const SearchIsland = ({
             type="text"
             id="search-input"
             placeholder="Search articles, tags or categories..."
-            className="w-full p-2 pr-12 text-2xl border-2 border-black rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:ring-0 focus:outline-none focus:border-2 focus:border-black focus:scale-[1.01]"
-            style={{ backgroundColor: 'rgba(255, 228, 196, 0.4)' }}
+            className="w-full rounded-lg border-2 border-black bg-[rgba(255,228,196,0.4)] p-2 pr-12 text-2xl text-slate-900 placeholder-slate-400 focus:scale-[1.01] focus:border-2 focus:border-black focus:outline-none focus:ring-0"
             value={searchQuery}
             onChange={handleSearchInput}
           />

@@ -75,7 +75,7 @@ const isReadingTimeEnabled = isFeatureEnabled('readingTime');
           {tags && tags.map(tag => (
             <a
               href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-              class="inline-flex items-center rounded-3xl bg-[rgba(255,228,196,0.7)] px-2 py-1 text-[0.9em] text-[#333] no-underline hover:text-[#333]"
+              class="inline-flex items-center rounded-3xl bg-tag-highlight px-2 py-1 text-[0.9em] text-[#332113] no-underline transition-colors hover:bg-tag-highlight-strong hover:text-black"
             >
               <Icon name="tag" class="w-4 h-4 mr-1" />
               {tag}

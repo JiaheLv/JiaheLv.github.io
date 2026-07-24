@@ -31,7 +31,7 @@ const topTags = tags.slice(0, 12);
   {topTags.map(tag => (
     <a 
       href={getLink(`/tags/${tag.name.toLowerCase().replace(/\s+/g, '-')}`)}
-      class="rounded-full bg-[rgba(255,228,196,0.7)] px-3 py-1 text-sm text-[#333] transition-colors hover:bg-slate-200 hover:text-[#333]"
+      class="rounded-full bg-tag-highlight px-3 py-1 text-sm text-[#332113] transition-colors hover:bg-tag-highlight-strong hover:text-black"
     >
       {tag.name}
       <span class="ml-1 text-slate-500 text-xs">({tag.count})</span>

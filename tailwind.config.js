@@ -3,6 +3,11 @@ export default {
   content: ['./src/**/*.{js,ts,jsx,tsx,astro}'],
   theme: {
     extend: {
+      colors: {
+        'theme-highlight': 'rgba(255, 191, 112, 0.35)',
+        'tag-highlight': 'rgba(183, 105, 42, 0.52)',
+        'tag-highlight-strong': 'rgba(163, 91, 33, 0.60)',
+      },
       typography: {
         DEFAULT: {
           css: {

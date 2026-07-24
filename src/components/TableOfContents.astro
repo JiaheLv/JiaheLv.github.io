@@ -11,62 +11,181 @@ export interface Props {
 
 const { headings } = Astro.props;
 
-// Check if table of contents feature is enabled
-const isTocEnabled = isFeatureEnabled('tableOfContents');
+if (!isFeatureEnabled('tableOfContents')) return;
 
-// If the feature is disabled, return early
-if (!isTocEnabled) return;
-
-// Only render h2 and h3 headings
-const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+let sectionIndex = 0;
+const toc = headings
+  .filter(heading => heading.depth >= 2 && heading.depth <= 3)
+  .map(heading => ({
+    ...heading,
+    badge: heading.depth === 2 ? ++sectionIndex : null,
+  }));
 ---
 
 {toc.length > 0 && (
-  <nav class="toc m-0 flex max-h-[inherit] flex-col rounded-[0.6em] border border-slate-200 bg-[rgba(255,228,196,0.4)] px-[15px] py-[10px]">
-    <h2 class="m-0 border-b-2 border-black p-0 text-[1.4em]">Table of Contents</h2>
-    <ul class="mt-[5px] min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {toc.map(heading => (
-        <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
-          <a
-            href={`#${heading.slug}`}
-            class="rounded-[0.3em] px-[3px] py-[2px] font-normal text-[#333] hover:bg-[rgba(255,228,196,0.7)] hover:font-semibold hover:text-black hover:underline"
-          >
-            {heading.text}
-          </a>
-        </li>
-      ))}
-    </ul>
+  <nav
+    data-toc
+    aria-label="文章目录"
+    class="m-0 flex max-h-[inherit] min-h-0 flex-col rounded-[0.6em] border border-slate-200 bg-[rgba(255,228,196,0.4)] px-[15px] py-[10px]"
+  >
+    <h2 class="m-0 border-b-2 border-black p-0 pb-1 text-[1.4em]">Table of Contents</h2>
+
+    <div
+      data-toc-scroll
+      class="mt-1 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain scroll-smooth pr-0.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
+    >
+      <ul
+        data-toc-list
+        class="relative isolate m-0 flex list-none flex-col gap-1 overflow-visible px-0 py-0.5"
+      >
+        <li
+          data-toc-indicator
+          aria-hidden="true"
+          class="pointer-events-none absolute -inset-x-1 top-0 z-0 h-0 rounded-lg bg-theme-highlight opacity-0 shadow-[0_6px_18px_-14px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-black/15 transition-[transform,height,opacity] duration-200 ease-out motion-reduce:transition-none"
+        ></li>
+
+        {toc.map(heading => (
+          <li class="relative z-10 m-0 p-0">
+            <a
+              data-toc-link
+              data-heading-id={heading.slug}
+              data-active="false"
+              href={`#${heading.slug}`}
+              title={heading.text}
+              class={`group flex min-h-9 min-w-0 items-center gap-2 rounded-lg py-1.5 pr-2 text-sm font-medium leading-snug text-[#333] no-underline transition-[color,transform] duration-150 hover:translate-x-px hover:text-black hover:no-underline data-[active=true]:font-semibold data-[active=true]:text-black ${heading.depth === 3 ? 'pl-5' : 'pl-2'}`}
+            >
+              {heading.badge !== null ? (
+                <span
+                  aria-hidden="true"
+                  class="grid size-[1.35rem] shrink-0 place-items-center rounded-md bg-[#a66a36] text-[0.68rem] font-bold leading-none text-[#fff0dc] shadow-sm transition-[background-color,box-shadow] group-data-[active=true]:bg-[#7d451d] group-data-[active=true]:shadow-md"
+                >
+                  {heading.badge}
+                </span>
+              ) : (
+                <span aria-hidden="true" class="grid size-[1.35rem] shrink-0 place-items-center">
+                  <span class="size-2 rounded-full bg-[#b98252] ring-2 ring-white/60 transition-[background-color,transform] group-data-[active=true]:scale-110 group-data-[active=true]:bg-[#8f5428]"></span>
+                </span>
+              )}
+
+              <span class="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                {heading.text}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </nav>
 )}
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5
-    };
+  const initializeTableOfContents = () => {
+    const articleHeadings = Array.from(
+      document.querySelectorAll<HTMLElement>('h2[id], h3[id]')
+    );
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const id = entry.target.getAttribute('id');
-        if (id) {
-          const tocLink = document.querySelector(`.toc a[href="#${id}"]`);
-          if (tocLink) {
-            if (entry.isIntersecting) {
-              document.querySelectorAll('.toc a').forEach(link => {
-                link.classList.remove('text-indigo-600', 'font-medium');
-              });
-              tocLink.classList.add('text-indigo-600', 'font-medium');
-            }
-          }
+    document.querySelectorAll<HTMLElement>('[data-toc]').forEach(toc => {
+      if (toc.dataset.initialized === 'true') return;
+      toc.dataset.initialized = 'true';
+
+      const list = toc.querySelector<HTMLElement>('[data-toc-list]');
+      const scrollContainer = toc.querySelector<HTMLElement>('[data-toc-scroll]');
+      const indicator = toc.querySelector<HTMLElement>('[data-toc-indicator]');
+      const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+
+      if (!list || !scrollContainer || !indicator || links.length === 0) return;
+
+      const linksByHeading = new Map(
+        links.map(link => [link.dataset.headingId, link] as const)
+      );
+      const trackedHeadings = articleHeadings.filter(heading => linksByHeading.has(heading.id));
+
+      let animationFrame = 0;
+      let activeKey = '';
+
+      const scrollToActiveItem = (item: HTMLElement) => {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        const isVisible = itemRect.top >= containerRect.top && itemRect.bottom <= containerRect.bottom;
+
+        if (isVisible) return;
+
+        scrollContainer.scrollTo({
+          top:
+            scrollContainer.scrollTop +
+            itemRect.top -
+            containerRect.top -
+            (scrollContainer.clientHeight - itemRect.height) / 2,
+          behavior: 'smooth',
+        });
+      };
+
+      const updateActiveState = () => {
+        animationFrame = 0;
+
+        if (toc.offsetParent === null || trackedHeadings.length === 0) {
+          indicator.style.opacity = '0';
+          return;
         }
-      });
-    }, observerOptions);
 
-    // Track all headings that have an ID applied
-    document.querySelectorAll('h2[id], h3[id]').forEach(heading => {
-      observer.observe(heading);
+        let activeHeadings = trackedHeadings.filter(heading => {
+          const rect = heading.getBoundingClientRect();
+          return rect.top < window.innerHeight && rect.bottom > 0;
+        });
+
+        if (activeHeadings.length === 0) {
+          activeHeadings = [trackedHeadings.reduce((closest, heading) => {
+            const closestDistance = Math.abs(closest.getBoundingClientRect().top);
+            const headingDistance = Math.abs(heading.getBoundingClientRect().top);
+            return headingDistance < closestDistance ? heading : closest;
+          })];
+        }
+
+        const activeIds = new Set(activeHeadings.map(heading => heading.id));
+        const activeLinks = links.filter(link => activeIds.has(link.dataset.headingId ?? ''));
+
+        links.forEach(link => {
+          const isActive = activeIds.has(link.dataset.headingId ?? '');
+          link.dataset.active = String(isActive);
+          link.removeAttribute('aria-current');
+        });
+
+        if (activeLinks.length === 0) {
+          indicator.style.opacity = '0';
+          return;
+        }
+
+        activeLinks[0].setAttribute('aria-current', 'location');
+
+        const listRect = list.getBoundingClientRect();
+        const firstRect = activeLinks[0].getBoundingClientRect();
+        const lastRect = activeLinks[activeLinks.length - 1].getBoundingClientRect();
+
+        indicator.style.transform = `translateY(${firstRect.top - listRect.top}px)`;
+        indicator.style.height = `${lastRect.bottom - firstRect.top}px`;
+        indicator.style.opacity = '1';
+
+        const nextActiveKey = activeLinks.map(link => link.dataset.headingId).join('|');
+        if (nextActiveKey !== activeKey) {
+          activeKey = nextActiveKey;
+          scrollToActiveItem(activeLinks[0]);
+        }
+      };
+
+      const scheduleUpdate = () => {
+        if (animationFrame !== 0) return;
+        animationFrame = window.requestAnimationFrame(updateActiveState);
+      };
+
+      window.addEventListener('scroll', scheduleUpdate, { passive: true });
+      window.addEventListener('resize', scheduleUpdate, { passive: true });
+      scheduleUpdate();
     });
-  });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTableOfContents, { once: true });
+  } else {
+    initializeTableOfContents();
+  }
 </script>

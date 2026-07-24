@@ -66,7 +66,7 @@ const siteConfig = getSiteConfig();
       {topTags.map(({ tag, count }) => (
         <a
           href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-          class="text-md px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors shadow-sm"
+          class="text-md rounded-full bg-tag-highlight px-4 py-2 text-[#332113] shadow-sm transition-colors hover:bg-tag-highlight-strong hover:text-black"
         >
           {tag}
           <span class="ml-1 text-slate-500">({count})</span>

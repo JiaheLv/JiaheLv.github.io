@@ -69,14 +69,14 @@ const SearchResultCard = React.memo(function SearchResultCard({
               <a
                 key={tag}
                 href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-                className="rounded-full bg-[rgba(255,228,196,0.7)] px-2 py-0.5 text-xs text-slate-600"
+                className="rounded-full bg-tag-highlight px-2 py-0.5 text-xs text-[#332113] transition-colors hover:bg-tag-highlight-strong hover:text-black"
               >
                 {tag}
               </a>
             ))}
             {post.tags.length > 3 && (
               <span
-                className="rounded-full bg-[rgba(255,228,196,0.8)] px-2 py-0.5 text-xs text-slate-500"
+                className="rounded-full bg-tag-highlight px-2 py-0.5 text-xs text-[#332113]"
               >
                 +{post.tags.length - 3}
               </span>

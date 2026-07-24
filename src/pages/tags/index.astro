@@ -108,10 +108,10 @@ const sortedLetters = Object.keys(tagsByLetter).sort();
       {sortedTags.map(({ tag, count }) => (
         <a
           href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-          class="flex items-center rounded-full bg-[rgba(255,228,196,0.7)] px-4 py-2 text-sm text-black decoration-black hover:text-black hover:underline"
+          class="flex items-center rounded-full bg-tag-highlight px-4 py-2 text-sm text-[#332113] decoration-black transition-colors hover:bg-tag-highlight-strong hover:text-black hover:underline"
         >
           <span>{tag}</span>
-          <span class="ml-2 rounded-full bg-[rgba(255,228,196,1)] px-2 py-0.5 text-xs text-black">
+          <span class="ml-2 rounded-full bg-tag-highlight-strong px-2 py-0.5 text-xs text-black">
             {count}
           </span>
         </a>

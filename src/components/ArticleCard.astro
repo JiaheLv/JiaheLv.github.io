@@ -61,13 +61,13 @@ const formattedDate = pubDate.toLocaleDateString('en-us', {
         {tags && tags.length > 0 && tags.slice(0, 3).map(tag => (
           <a
             href={getLink(`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`)}
-            class="rounded-full bg-[rgba(255,228,196,0.7)] px-2 py-0.5 text-xs text-slate-600"
+            class="rounded-full bg-tag-highlight px-2 py-0.5 text-xs text-[#332113] transition-colors hover:bg-tag-highlight-strong hover:text-black"
           >
             {tag}
           </a>
         ))}
         {tags && tags.length > 3 && 
-          <span class="rounded-full bg-[rgba(255,228,196,0.8)] px-2 py-0.5 text-xs text-slate-500">
+          <span class="rounded-full bg-tag-highlight px-2 py-0.5 text-xs text-[#332113]">
             +{tags.length - 3}
           </span>
         }

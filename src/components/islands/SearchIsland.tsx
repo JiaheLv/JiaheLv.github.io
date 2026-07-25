@@ -42,6 +42,18 @@ const getLink = (path: string) => {
   return `${basePath}${normalizedPath}`;
 };
 
+const getQueryFromLocation = () => {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  return (new URLSearchParams(window.location.search).get('q') || '').trim();
+};
+
+const searchResultCountLabel = '\u627e\u5230';
+const searchResultMatchLabel = '\u6761\u4e0e';
+const searchResultSuffixLabel = '\u5339\u914d\u7684\u7ed3\u679c';
+
 const SearchResultCard = React.memo(function SearchResultCard({
   post,
   formatDate
@@ -163,7 +175,7 @@ const SearchIsland = ({
 
   useEffect(() => {
     const handlePopState = () => {
-      const queryFromUrl = new URLSearchParams(window.location.search).get('q') || '';
+      const queryFromUrl = getQueryFromLocation();
       setSearchQuery(queryFromUrl);
 
       if (fuseRef.current && queryFromUrl) {
@@ -247,8 +259,11 @@ const SearchIsland = ({
       return;
     }
 
-    if (initialQuery) {
-      performSearch(initialQuery, false);
+    const resolvedInitialQuery = getQueryFromLocation() || initialQuery.trim();
+
+    if (resolvedInitialQuery) {
+      setSearchQuery(resolvedInitialQuery);
+      performSearch(resolvedInitialQuery, false);
     }
 
     initialQueryRun.current = true;
@@ -327,7 +342,7 @@ const SearchIsland = ({
       {searchQuery && (
         <div className="text-center m-0 p-0">
           <p className="text-slate-600">
-            鍏辨湁 <span>{searchResults.length}</span> 涓粨鏋滃尮閰?"<span>{searchQuery}</span>"
+            {searchResultCountLabel} <span>{searchResults.length}</span> {searchResultMatchLabel} "<span>{searchQuery}</span>" {searchResultSuffixLabel}
           </p>
         </div>
       )}

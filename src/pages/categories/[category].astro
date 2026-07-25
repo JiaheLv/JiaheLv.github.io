@@ -65,7 +65,7 @@ const postLinkClass = 'mx-[5px] mb-[5px] block overflow-hidden text-ellipsis whi
 ---
 
 <CategoryPageLayout title={`${displayCategory} 列表`}>
-  <header class="flex flex-row items-end justify-between border-b-4 border-black p-[10px]">
+  <header class="flex flex-col gap-2 border-b-4 border-black p-[10px] sm:flex-row sm:items-end sm:justify-between">
     <h1 class="m-0 p-0 text-[2.5rem] font-bold">{displayCategory}</h1>
     <p class="m-0 p-0 text-[1.1rem] font-medium text-[#555]">
       <!-- Showing {sortedPosts.length} post{sortedPosts.length !== 1 ? 's' : ''} in the "{displayCategory}" category -->
@@ -86,7 +86,7 @@ const postLinkClass = 'mx-[5px] mb-[5px] block overflow-hidden text-ellipsis whi
       <p class="text-xl text-slate-600">No posts found in this category.</p>
     </div>
   ) : (
-    <div class="mx-[10px] mt-[10px] grid grid-cols-2 gap-[30px] p-0">
+    <div class="mx-0 mt-[10px] grid grid-cols-1 gap-5 p-0 sm:mx-[10px] sm:grid-cols-2 lg:gap-[30px]">
       {sortedSubjects.map(({ name, posts }) => (
         <div class="m-0 p-0">
           <h2 class="mb-[10px] mt-0 border-b-2 border-black p-0 text-2xl">{name}</h2>

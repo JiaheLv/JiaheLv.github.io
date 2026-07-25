@@ -260,7 +260,7 @@ const SearchIsland = ({
     }
 
     return (
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
         {searchResults.map((result) => (
           <SearchResultCard
             key={result.item.slug}
@@ -280,7 +280,7 @@ const SearchIsland = ({
     return (
       <>
         <h2 className="text-2xl font-bold mb-6">All Articles</h2>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
           {searchArticles.map((post) => (
             <SearchResultCard
               key={post.slug}

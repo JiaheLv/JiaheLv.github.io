@@ -242,6 +242,12 @@
     @apply block max-w-full overflow-x-auto;
   }
 
+  /* Keep long URLs inside the article column as the viewport narrows. */
+  .prose-parchment a {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   @media (max-width: 640px) {
     .prose-parchment .code-block__toolbar {
       @apply px-2.5;

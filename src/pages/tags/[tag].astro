@@ -67,7 +67,7 @@ const totalItems = sortedPosts.length;
   {sortedPosts.length > 0 && (
     <section class="max-w-4xl mx-auto mb-12">
       <h2 class="text-2xl font-bold mb-6">Blog Posts</h2>
-      <div class="grid gap-8 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
         {sortedPosts.map(post => (
           <ArticleCard
             title={post.data.title}
@@ -89,4 +89,4 @@ const totalItems = sortedPosts.length;
       <p class="text-xl text-slate-600">No items found with this tag.</p>
     </div>
   )}
-</TPL> 
+</TPL>

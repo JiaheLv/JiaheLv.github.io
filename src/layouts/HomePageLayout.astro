@@ -17,37 +17,37 @@ const { title, description, image, article } = Astro.props;
   description={description}
   image={image}
   article={article}
-  bodyClass="m-0 flex h-[100dvh] flex-col overflow-hidden bg-white p-0 font-sans text-slate-900 antialiased"
+  bodyClass="m-0 flex min-h-[100dvh] flex-col overflow-x-hidden bg-white p-0 font-sans text-slate-900 antialiased xl:h-[100dvh] xl:overflow-hidden"
 >
   <!-- Main Content -->
-  <div class="mx-auto mt-[10px] grid h-auto min-h-0 w-[94%] flex-1 grid-cols-[2.2fr_7.8fr] grid-rows-[5.8fr_4.2fr] gap-[10px] p-0">
+  <div class="mx-auto mt-[10px] grid h-auto min-h-0 w-[calc(100%-1rem)] max-w-[1800px] flex-1 grid-cols-1 auto-rows-[minmax(16rem,auto)] gap-[10px] p-0 sm:w-[94%] sm:grid-cols-2 xl:grid-cols-[2.2fr_7.8fr] xl:grid-rows-[5.8fr_4.2fr] xl:auto-rows-auto">
     <!-- <header class="pb-8 border-b border-slate-200 mb-8">
       <slot name="hero" />
     </header> -->
 
     <!-- 笔记 -->
-    <section class="col-start-1 row-span-2 row-start-1 flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
+    <section class="flex min-h-[16rem] min-w-0 flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)] xl:col-start-1 xl:row-span-2 xl:row-start-1 xl:min-h-0">
       <slot name="notes" />
     </section>
-    <div class="grid grid-cols-[1.5fr_1fr]">
+    <div class="contents xl:grid xl:grid-cols-[1.5fr_1fr]">
       <!-- 项目 -->
-      <section class="col-start-1 row-start-1 mr-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
+      <section class="flex min-h-[16rem] min-w-0 flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)] xl:col-start-1 xl:row-start-1 xl:mr-[5px] xl:min-h-0">
         <slot name="projects" />
       </section>
 
       <!-- 札记 -->
-      <section class="col-start-2 row-start-1 ml-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
+      <section class="flex min-h-[16rem] min-w-0 flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)] xl:col-start-2 xl:row-start-1 xl:ml-[5px] xl:min-h-0">
         <slot name="essays" />
       </section>
     </div>
-    <div class="grid grid-cols-2">
+    <div class="contents xl:grid xl:grid-cols-2">
       <!-- 杂记 -->
-      <section class="col-start-1 row-start-1 mr-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
+      <section class="flex min-h-[16rem] min-w-0 flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)] xl:col-start-1 xl:row-start-1 xl:mr-[5px] xl:min-h-0">
         <slot name="misc" />
       </section>
 
       <!-- 随笔 -->
-      <section class="col-start-2 row-start-1 ml-[5px] flex flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)]">
+      <section class="flex min-h-[16rem] min-w-0 flex-col overflow-hidden rounded-[10px] border-[3px] border-solid border-black p-[10px] shadow-[0_4px_15px_rgba(0,0,0,0.1)] transition hover:scale-[1.01] hover:bg-[rgba(255,191,112,0.3)] hover:shadow-[5px_5px_10px_rgba(0,0,0,0.8)] xl:col-start-2 xl:row-start-1 xl:ml-[5px] xl:min-h-0">
         <slot name="casual" />
       </section>
     </div>

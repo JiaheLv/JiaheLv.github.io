@@ -1,0 +1,214 @@
+---
+import Icon from '@components/Icon.astro';
+import { Icon as AstroIcon } from 'astro-icon/components';
+---
+
+<template id="code-block-icon-copy">
+  <Icon name="copy-outline" class="block" size={16} />
+</template>
+<template id="code-block-icon-copied">
+  <AstroIcon name="heroicons:check" class="h-4 w-4" />
+</template>
+<template id="code-block-icon-expand">
+  <AstroIcon name="heroicons:chevron-down" class="h-4 w-4" />
+</template>
+<template id="code-block-icon-collapse">
+  <AstroIcon name="heroicons:chevron-up" class="h-4 w-4" />
+</template>
+
+<script>
+  const COLLAPSE_LINE_THRESHOLD = 15;
+  const COLLAPSED_PREVIEW_LINES = 8;
+  const COPY_FEEDBACK_DURATION = 1800;
+
+  const cloneIcon = (templateId: string) => {
+    const template = document.getElementById(templateId) as HTMLTemplateElement | null;
+    return template?.content.firstElementChild?.cloneNode(true) ?? document.createTextNode('');
+  };
+
+  const setButtonIcon = (button: HTMLButtonElement, templateId: string) => {
+    button.replaceChildren(cloneIcon(templateId));
+  };
+
+  const copyWithFallback = (text: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.append(textarea);
+    textarea.select();
+    const copied = document.execCommand('copy');
+    textarea.remove();
+
+    if (!copied) {
+      throw new Error('The browser rejected the copy command.');
+    }
+  };
+
+  const copyCode = async (text: string) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    copyWithFallback(text);
+  };
+
+  const enhanceCodeBlocks = () => {
+    const codeBlocks = document.querySelectorAll<HTMLElement>(
+      '.prose-parchment pre.astro-code:not([data-code-enhanced])',
+    );
+
+    codeBlocks.forEach((pre, index) => {
+      const code = pre.querySelector<HTMLElement>('code');
+      const parent = pre.parentElement;
+
+      if (!code || !parent) return;
+
+      pre.dataset.codeEnhanced = 'true';
+      const lines = Array.from(code.querySelectorAll<HTMLElement>('.line'));
+      const language = pre.dataset.language?.trim() || 'text';
+      const frame = document.createElement('div');
+      const toolbar = document.createElement('div');
+      const languageLabel = document.createElement('span');
+      const copyButton = document.createElement('button');
+      const viewport = document.createElement('div');
+      const copyStatus = document.createElement('span');
+      const viewportId = `code-block-${index + 1}`;
+
+      frame.className = 'code-block';
+      frame.dataset.codeBlock = '';
+      frame.setAttribute('aria-label', `${language} 代码块`);
+      toolbar.className = 'code-block__toolbar';
+      languageLabel.className = 'code-block__language';
+      languageLabel.textContent = language;
+
+      copyButton.type = 'button';
+      copyButton.className = 'code-block__icon-button';
+      copyButton.dataset.codeAction = 'copy';
+      copyButton.title = '复制代码';
+      copyButton.setAttribute('aria-label', '复制代码');
+      copyButton.setAttribute('aria-describedby', `${viewportId}-copy-status`);
+      setButtonIcon(copyButton, 'code-block-icon-copy');
+
+      copyStatus.id = `${viewportId}-copy-status`;
+      copyStatus.className = 'sr-only';
+      copyStatus.setAttribute('role', 'status');
+      copyStatus.setAttribute('aria-live', 'polite');
+
+      viewport.id = viewportId;
+      viewport.className = 'code-block__viewport';
+      parent.insertBefore(frame, pre);
+      toolbar.append(languageLabel, copyButton, copyStatus);
+      viewport.append(pre);
+      frame.append(toolbar, viewport);
+
+      let copyFeedbackTimer: number | undefined;
+      copyButton.addEventListener('click', async () => {
+        window.clearTimeout(copyFeedbackTimer);
+
+        try {
+          await copyCode(code.textContent?.replace(/\n$/, '') ?? '');
+          frame.dataset.copyState = 'copied';
+          copyButton.title = '已复制';
+          copyButton.setAttribute('aria-label', '代码已复制');
+          copyStatus.textContent = '代码已复制';
+          setButtonIcon(copyButton, 'code-block-icon-copied');
+        } catch {
+          frame.dataset.copyState = 'error';
+          copyButton.title = '复制失败';
+          copyButton.setAttribute('aria-label', '复制失败，请手动选择代码');
+          copyStatus.textContent = '复制失败，请手动选择代码';
+        }
+
+        copyFeedbackTimer = window.setTimeout(() => {
+          delete frame.dataset.copyState;
+          copyButton.title = '复制代码';
+          copyButton.setAttribute('aria-label', '复制代码');
+          copyStatus.textContent = '';
+          setButtonIcon(copyButton, 'code-block-icon-copy');
+        }, COPY_FEEDBACK_DURATION);
+      });
+
+      if (lines.length <= COLLAPSE_LINE_THRESHOLD) return;
+
+      const footer = document.createElement('div');
+      const toggleButton = document.createElement('button');
+      const toggleLabel = document.createElement('span');
+      let collapsedHeight = 0;
+
+      footer.className = 'code-block__footer';
+      toggleButton.type = 'button';
+      toggleButton.className = 'code-block__toggle';
+      toggleButton.dataset.codeAction = 'toggle';
+      toggleButton.setAttribute('aria-controls', viewportId);
+      toggleLabel.className = 'code-block__toggle-label';
+      toggleButton.append(cloneIcon('code-block-icon-expand'), toggleLabel);
+      footer.append(toggleButton);
+      frame.append(footer);
+      frame.dataset.collapsible = 'true';
+
+      const measureCollapsedHeight = () => {
+        const previewLine = lines[COLLAPSED_PREVIEW_LINES - 1];
+        const preStyles = window.getComputedStyle(pre);
+        const fallbackLineHeight = Number.parseFloat(preStyles.lineHeight) || 24;
+        const paddingTop = Number.parseFloat(preStyles.paddingTop) || 0;
+        const paddingBottom = Number.parseFloat(preStyles.paddingBottom) || 0;
+        const lineRects = Array.from(previewLine.getClientRects());
+        const lastRect = lineRects.at(-1);
+
+        collapsedHeight = lastRect
+          ? Math.ceil(lastRect.bottom - pre.getBoundingClientRect().top + paddingBottom)
+          : Math.ceil(paddingTop + fallbackLineHeight * COLLAPSED_PREVIEW_LINES + paddingBottom);
+
+        if (frame.dataset.collapsed === 'true') {
+          viewport.style.maxHeight = `${collapsedHeight}px`;
+        }
+      };
+
+      const setCollapsed = (collapsed: boolean, animate: boolean) => {
+        const startHeight = viewport.getBoundingClientRect().height;
+        frame.dataset.collapsed = String(collapsed);
+        viewport.style.maxHeight = collapsed ? `${collapsedHeight}px` : 'none';
+        toggleButton.setAttribute('aria-expanded', String(!collapsed));
+        toggleButton.title = collapsed ? '展开代码' : '收起代码';
+        toggleLabel.textContent = collapsed ? '展开代码' : '收起代码';
+        toggleButton.replaceChildren(
+          cloneIcon(collapsed ? 'code-block-icon-expand' : 'code-block-icon-collapse'),
+          toggleLabel,
+        );
+
+        if (!animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const endHeight = viewport.getBoundingClientRect().height;
+        viewport.animate(
+          [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
+          { duration: 220, easing: 'ease-out' },
+        );
+      };
+
+      requestAnimationFrame(() => {
+        measureCollapsedHeight();
+        setCollapsed(true, false);
+      });
+
+      toggleButton.addEventListener('click', () => {
+        setCollapsed(frame.dataset.collapsed !== 'true', true);
+      });
+
+      if ('ResizeObserver' in window) {
+        const resizeObserver = new ResizeObserver(measureCollapsedHeight);
+        resizeObserver.observe(pre);
+      } else {
+        window.addEventListener('resize', measureCollapsedHeight, { passive: true });
+      }
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enhanceCodeBlocks, { once: true });
+  } else {
+    enhanceCodeBlocks();
+  }
+</script>

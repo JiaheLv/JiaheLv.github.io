@@ -1,6 +1,7 @@
 ---
 import BlogPageLayout from '@layouts/BlogPageLayout.astro';
 import TableOfContents from '@components/TableOfContents.astro';
+import CodeBlockEnhancer from '@components/CodeBlockEnhancer.astro';
 import Icon from '@components/Icon.astro';
 import Comments from '@components/Comments.astro';
 import { getCollection } from 'astro:content';
@@ -121,9 +122,10 @@ const isReadingTimeEnabled = isFeatureEnabled('readingTime');
       </div>
         
       <!-- Article Content -->
-      <div class="prose prose-lg prose-slate prose-headings:scroll-mt-20">
+      <div class="prose prose-lg prose-parchment prose-headings:scroll-mt-20">
         <Content />
       </div>
+      <CodeBlockEnhancer />
       
       
       <!-- Comments section -->

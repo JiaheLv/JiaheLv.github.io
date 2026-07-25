@@ -24,25 +24,25 @@ const { title, description, image, article, toc, pubDate, updatedDate, tags, cat
 ---
 
 <BaseLayout title={title} description={description} image={image} article={article} pubDate={pubDate} updatedDate={updatedDate} tags={tags} category={category}>
-  <div class="m-[10px] flex flex-row items-start justify-center">
+  <div class="mx-auto my-[10px] flex w-full flex-col items-start justify-center px-2 sm:px-3 xl:flex-row xl:px-0">
     <!-- Mobile Navigation (shown only on small screens) -->
     <MobileNav />
 
     {toc && toc.length > 0 && (
-      <div class="mt-[80px] max-h-[80vh] w-[15%] shrink-0 self-start overflow-y-hidden sticky top-[12%]">
+      <div class="mt-[80px] hidden max-h-[80vh] w-[15%] shrink-0 self-start overflow-y-hidden xl:sticky xl:top-[12%] xl:block">
         <TableOfContents headings={toc} />
       </div>
     )}
 
     <!-- Main Content -->
-    <main class="mx-[10px] my-[10px] w-[55%] shrink-0 rounded-[0.6em] border border-slate-200 bg-[rgba(255,228,196,0.4)] px-[20px] py-[15px]">
+    <main class="my-[10px] w-full min-w-0 shrink-0 rounded-[0.6em] border border-slate-200 bg-[rgba(255,228,196,0.4)] px-3 py-[15px] sm:px-[20px] xl:mx-[10px] xl:w-[55%]">
       <div>
         <slot />
       </div>
     </main>
 
     <!-- Right Sidebar -->
-    <div class="mt-[80px] w-[15%] shrink-0 self-start sticky top-[15%]">
+    <div class="mt-[80px] hidden w-[15%] shrink-0 self-start xl:sticky xl:top-[15%] xl:block">
       <Sidebar />
     </div>
   </div>

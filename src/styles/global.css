@@ -76,35 +76,185 @@
 
   /* Prose content */
   .prose {
-    @apply max-w-none text-slate-700;
+    @apply max-w-none;
   }
 
   .prose h1, .prose h2, .prose h3, .prose h4 {
-    @apply text-slate-900 scroll-mt-20;
+    @apply scroll-mt-20;
   }
 
-  .prose a {
+  .prose:not(.prose-parchment) {
+    @apply text-slate-700;
+  }
+
+  .prose:not(.prose-parchment) h1,
+  .prose:not(.prose-parchment) h2,
+  .prose:not(.prose-parchment) h3,
+  .prose:not(.prose-parchment) h4 {
+    @apply text-slate-900;
+  }
+
+  .prose:not(.prose-parchment) a {
     @apply text-indigo-600 no-underline hover:underline;
   }
 
-  .prose code {
+  .prose:not(.prose-parchment) code {
     @apply px-1 py-0.5 rounded bg-slate-100 text-slate-700;
   }
 
-  .prose pre {
+  .prose:not(.prose-parchment) pre {
     @apply bg-slate-900 text-slate-200 p-4 rounded-lg overflow-x-auto;
   }
 
-  .prose pre code {
+  .prose:not(.prose-parchment) pre code {
     @apply bg-transparent text-inherit p-0;
   }
 
-  .prose blockquote {
+  .prose:not(.prose-parchment) blockquote {
     @apply border-l-4 border-indigo-300 pl-4 py-1 italic;
   }
 
-  .prose img {
-    @apply rounded-lg mx-auto my-6;
+  /* Shiki emits its background inline, so the parchment code surface overrides it explicitly. */
+  .prose-parchment pre.astro-code {
+    background-color: rgba(166, 93, 36, 0.8) !important;
   }
 
+  .prose img {
+    @apply mx-auto my-6 rounded-lg border border-[rgba(109,72,41,0.25)] shadow-sm;
+  }
+
+}
+
+@layer components {
+  .prose-parchment .code-block {
+    @apply relative my-[1.7em] overflow-hidden rounded-lg border shadow-[0_8px_24px_-18px_rgba(45,27,16,0.75)];
+
+    border-color: rgba(125, 69, 29, 0.55);
+    background-color: rgba(166, 93, 36, 0.8);
+  }
+
+  .prose-parchment .code-block__toolbar {
+    @apply flex h-11 items-center justify-between border-b px-3;
+
+    border-color: rgba(255, 224, 194, 0.18);
+    background-color: rgba(76, 38, 16, 0.22);
+  }
+
+  .prose-parchment .code-block__language {
+    @apply min-w-0 truncate font-mono text-xs font-semibold uppercase tracking-normal;
+
+    color: rgba(255, 239, 220, 0.78);
+  }
+
+  .prose-parchment .code-block__icon-button {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border transition-colors duration-150;
+
+    color: rgba(255, 242, 226, 0.88);
+    border-color: rgba(255, 226, 198, 0.24);
+    background-color: rgba(255, 231, 205, 0.1);
+  }
+
+  .prose-parchment .code-block__icon-button:hover {
+    color: #fff8ef;
+    background-color: rgba(255, 231, 205, 0.2);
+  }
+
+  .prose-parchment .code-block__icon-button:focus-visible,
+  .prose-parchment .code-block__toggle:focus-visible {
+    @apply outline-none ring-2 ring-[#ffe0bd] ring-offset-2 ring-offset-[#7d451d];
+  }
+
+  .prose-parchment .code-block[data-copy-state='copied'] .code-block__icon-button {
+    color: #fff8ef;
+    border-color: rgba(255, 232, 207, 0.45);
+    background-color: rgba(92, 54, 27, 0.38);
+  }
+
+  .prose-parchment .code-block[data-copy-state='error'] .code-block__icon-button {
+    color: #fff1e5;
+    border-color: rgba(255, 209, 177, 0.55);
+    background-color: rgba(104, 36, 19, 0.42);
+  }
+
+  .prose-parchment .code-block__viewport {
+    @apply relative overflow-hidden;
+  }
+
+  .prose-parchment .code-block pre.astro-code {
+    @apply m-0 rounded-none border-0 px-4 pb-[1.1rem] pt-4 shadow-none;
+
+    background-color: transparent !important;
+  }
+
+  .prose-parchment .code-block pre.astro-code code {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    counter-reset: code-line;
+  }
+
+  .prose-parchment .code-block pre.astro-code code > .line::before {
+    content: counter(code-line);
+    counter-increment: code-line;
+    display: inline-block;
+    width: 2.75rem;
+    margin-right: 1rem;
+    padding-right: 0.85rem;
+    color: rgba(255, 231, 207, 0.58);
+    border-right: 1px solid rgba(255, 224, 194, 0.2);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    user-select: none;
+  }
+
+  .prose-parchment .code-block[data-collapsed='true'] .code-block__viewport::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2.5rem;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(166, 93, 36, 0), rgba(119, 60, 25, 0.68));
+  }
+
+  .prose-parchment .code-block__footer {
+    @apply flex h-11 items-center justify-center border-t px-3;
+
+    border-color: rgba(255, 224, 194, 0.18);
+    background-color: rgba(76, 38, 16, 0.18);
+  }
+
+  .prose-parchment .code-block__toggle {
+    @apply inline-flex h-8 items-center justify-center gap-1.5 rounded-md border px-3 text-xs font-semibold tracking-normal transition-colors duration-150;
+
+    color: rgba(255, 242, 226, 0.9);
+    border-color: rgba(255, 226, 198, 0.24);
+    background-color: rgba(255, 231, 205, 0.1);
+  }
+
+  .prose-parchment .code-block__toggle:hover {
+    color: #fff8ef;
+    background-color: rgba(255, 231, 205, 0.2);
+  }
+
+  .prose-parchment table {
+    @apply block max-w-full overflow-x-auto;
+  }
+
+  @media (max-width: 640px) {
+    .prose-parchment .code-block__toolbar {
+      @apply px-2.5;
+    }
+
+    .prose-parchment .code-block pre.astro-code {
+      @apply px-3;
+    }
+
+    .prose-parchment .code-block pre.astro-code code > .line::before {
+      width: 2.3rem;
+      margin-right: 0.7rem;
+      padding-right: 0.65rem;
+    }
+  }
 }

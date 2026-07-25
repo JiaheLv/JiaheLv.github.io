@@ -32,7 +32,7 @@ export default defineConfig({
         [rehypeAutolinkHeadings, { behavior: 'append' }]
       ],
       shikiConfig: {
-        theme: 'github-dark',
+        theme: 'material-theme-darker',
         langs: ['html', 'css', 'js', 'ts', 'jsx', 'tsx', 'json', 'bash', 'md'],
         wrap: true
       }
